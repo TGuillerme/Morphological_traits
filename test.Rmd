@@ -1,0 +1,30 @@
+---
+title: "Reproducible computation at scale in R"
+author: Will Landau
+output: 
+  xaringan::moon_reader:
+    nature:
+      highlightLines: true
+---
+
+---
+
+## Slide 1
+
+This is some text
+
+---
+
+## Slide 2
+
+```{r}
+1+1
+```
+
+---
+
+## Slide 3
+
+```{r, echo = FALSE}
+plot(1)
+```
