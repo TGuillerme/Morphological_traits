@@ -6,16 +6,21 @@
  1. About me
     * NERC Fellow at the university of Sheffield (proto lecturer?)
     * Masters in France (Montpellier - I'm from around there), PhD in Dublin (with Natalie Cooper), Postdocs in Imperial College (near London), Brisbane (Australia), Sheffield.
-    * I work on 
+    * I work on understanding what mechanisms generate and maintain the diversity of traits through time? (but secretly I just like coding and solving stats problems)
  2. What are we going to do?
+    * We are going to look at how we can investigate evolutionary histories by looking at morphological characters.
+    * We are going to do that by using traitspaces (a way to analyse many traits for many species) and measure the diversity of traits (disparity) to investigate evolutionary history.
  3. How is it going to work
-    * Rmd + slides
+    * All this is available as bookdown slides. This means that you can follow along with me through the code in your favourite IDE (e.g. R studio) or just look at the slides and copy paste code directly from them.
+    * I am going to switch between both all the time: the slides for when I'm rambling and the IDE for when I'm coding.
  4. Insist in open research + collaboration (links back to About me)
+    * All this is done in bookdown (ask me more about it during the break) and is under CC0 licence. This means you can (re)use it, share it, modify it, do whatever you want with it.
+    * I make sure that my work is always open because 1) it's fun to do, 2) it's inclusive (I don't use any proprietary software for my sharable work so nobody needs to pay anything to use my work), 3) it allows for more collaboration.
+    * All my work is very collaborative, I cannot work alone. So although you will be listening to me today keep in mind that a lot of what you are listening to are ideas that I didn't came up with on my own and I got inspired and helped by many many very nice humans! (standing on the shoulders of a giant community - rather than giants)
 
 # 1 - Intro :
- 1. Why using morphological data? (why not molecular?)
-    * Objective vs. subjective: NO + only data available from the past (so there).
- 2. What can we do with morphological data?
+ 1. What is trait data: very brief.
+ 2. What can we do with trait data?
     * Phylogenetics (Rachel course next week) + PCM (tomorrow + most of the rest of the workshop! Yay!), including disparity
  3. What is disparity?
     * Intro from disparity paper
@@ -23,11 +28,13 @@
     * Mammals at the K-Pg
 
 # 2 - From specimens to traitspaces:
- 1. Types of morphological data
+ 1. Types of trait data
     * Continuous, gmm, discrete (qualitative, quantitative)
     * Combining this data in a meaningful way for analyses
- 2. Missing data and estimating ancestral traits
- 3. Ordinations (ordinating or not – traitspace vs. PCA, etc.)
+ 2. Why using morphological data? (why not molecular?)
+    * Objective vs. subjective: NO + only data available from the past (so there).
+ 3. Missing data and estimating ancestral traits
+ 4. Ordinations (ordinating or not – traitspace vs. PCA, etc.)
 
 # 3 - From traitspaces to disparity:
  1. Different types of traitspaces
