@@ -1,0 +1,72 @@
+--- 
+title: "Traits data in R"
+author: "Thomas Guillerme (t.guillerme@sheffield.ac.uk)"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [references.bib]
+link-citations: yes
+github-repo: TGuillerme/Morphological_traits
+description: "A guide to using morphological trait data in R"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Preamble
+
+## Requirements
+
+### General computer level
+
+In this workshop I will assume you are already familiar with how your computer works basically. You know how to do the following:
+
+ * Open a file with a specific software (sometimes that's not just double clicking)
+ * Locate a file in your computer (you know what a path is)
+
+#### Required software
+
+ * `R` ([the latest version](https://cran.r-project.org/))[^1]
+ * A plain text editor (NOT WORD!)
+ * *recommended:* an IDE ([integrated development environment](https://en.wikipedia.org/wiki/Integrated_development_environment)). For example [Rstudio](https://posit.co/products/open-source/rstudio/) or [Sublime Text](https://www.sublimetext.com/).
+
+[^1]: **Always update your software**. If you do that already, thank you very much. If you don't, have a thought for the software developers that try very hard to correct/improve/update your favourite software. They don't do it for no reason (and no, it's not that hard to click on "update" button). 
+
+### `R` level
+
+I will assume you are already familiar with basic `R`. The basic notions that I'll assume you know are:
+
+ * What is a package (e.g. `ape` or `dispRity`)
+ * What is an object (e.g. `this_object <- 1`)
+ * What is an object's class (e.g. the class `"matrix"` or `"phylo"`)
+ * What is a function (e.g. the function `mean(c(1,2))`)
+ * How to access function manuals (e.g. `?mean`)
+
+#### Required packages
+
+```{r, eval = FALSE}
+required_packages <- c("dispRity", # for disparity analyses
+                       )
+install.packages(required_packages)
+```
+
+Let's get into it.
+
+## Glossary
+
+Trait data is going to be the generic term here to designate any type of data that describe some measurable features of a specimen, species, group, etc.
+Here is a glossary table from @moms that specify what I mean throughout this book (and check @mammola2021concepts if you're more coming from ecology).
+
+Mathematics | Ecology | Macroevolution | This book
+--------------------|--------------------|--------------------|------------
+Matrix ($n \times d$) with a structural relation between rows and columns | Functional space, morphospace, etc. | Morphospace, traitspace, etc. | traitspace
+Rows (*n*) | Taxa, field sites, environments, etc. | Taxa, specimen, populations, etc. | observations
+Columns (*d*) | Traits, Ordination scores, distances, etc. | Traits, ordination scores, distances, etc. | dimensions
+Matrix subset ($m \times d$; $m \leq n$) | Treatments, phylogenetic group (clade), etc. | Clades, geological stratum, etc. | group
+Statistic (i.e. a measure)  | Dissimilarity index or metric, hypervolume, functional diversity, etc.  | Disparity metric or index | space occupancy measure
+Multidimensional analysis | Dissimilarity analysis, trait analysis, etc. | Disparity analysis, disparity-through-time, etc. | multidimensional analysis
+
+Note that here traits are treated as unidimensional (i.e. one column = one trait) but it doesn't need to be the case!
+For example you can have a multidimensional trait that is described using multiple numbers (a multidimensional trait), for the trait "location" can be described using both latitude and longitude (a 2D trait).

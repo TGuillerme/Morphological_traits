@@ -1,0 +1,19 @@
+---
+title: "Traits data in R"
+author: "Thomas Guillerme (t.guillerme@sheffield.ac.uk)"
+date: "`r Sys.Date()`"
+bibliography: [references.bib]
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# From traitspaces to disparity
+
+## Reducing the number of dimensions
+
+## Measuring disparity
+
+### Which disparity metric to use?
+
+### Testing disparity metrics

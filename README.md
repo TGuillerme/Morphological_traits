@@ -11,7 +11,9 @@
     * We are going to look at how we can investigate evolutionary histories by looking at morphological characters.
     * We are going to do that by using traitspaces (a way to analyse many traits for many species) and measure the diversity of traits (disparity) to investigate evolutionary history.
  3. How is it going to work
-    * All this is available as bookdown slides. This means that you can follow along with me through the code in your favourite IDE (e.g. R studio) or just look at the slides and copy paste code directly from them.
+    * All this is available as a bookdown file. This means that you can follow along with me through the code in your favourite IDE (e.g. R studio) or just look at the slides.
+      > Suggest: download a copy of the book and edit it for note taking etc.
+      > TODO: add some kind of magnifying glass logo for searchable "anchors" in the book.
     * I am going to switch between both all the time: the slides for when I'm rambling and the IDE for when I'm coding.
  4. Insist in open research + collaboration (links back to About me)
     * All this is done in bookdown (ask me more about it during the break) and is under CC0 licence. This means you can (re)use it, share it, modify it, do whatever you want with it.
@@ -21,8 +23,10 @@
 # 1 - Intro :
  1. What is trait data: very brief.
  2. What can we do with trait data?
+   @@@TODO
     * Phylogenetics (Rachel course next week) + PCM (tomorrow + most of the rest of the workshop! Yay!), including disparity
  3. What is disparity?
+   @@@TODO
     * Intro from disparity paper
  4. Our narrative
     * Mammals at the K-Pg
@@ -35,13 +39,14 @@
     * Objective vs. subjective: NO + only data available from the past (so there).
  3. Missing data and estimating ancestral traits
  4. Ordinations (ordinating or not – traitspace vs. PCA, etc.)
+ 5. Different types of traitspaces
+
 
 # 3 - From traitspaces to disparity:
- 1. Different types of traitspaces
- 2. Many many dimensions: breaking physics
+ 1. Many many dimensions: breaking physics
     * Multidimensional nightmare
     * Curse of dimensionality
- 3. Measuring disparity
+ 2. Measuring disparity
     * Choosing the right metric (depending on the question)
 
 # 4 - From disparity to understanding evolutionary biology:
