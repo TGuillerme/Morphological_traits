@@ -47,8 +47,9 @@ I will assume you are already familiar with basic `R`. The basic notions that I'
 #### Required packages
 
 ```{r, eval = FALSE}
-required_packages <- c("dispRity", # for disparity analyses
-                       )
+required_packages <- c("ape", # for analysing phylogenetic data
+                       "dispRity", # for disparity analyses
+                       "Morpho", # for analysing geometric morphometric data)
 install.packages(required_packages)
 ```
 
