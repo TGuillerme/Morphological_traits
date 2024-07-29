@@ -8,23 +8,182 @@ output:
   pdf_document: default
 ---
 
+```{r}
+## The packages to load for the section
+library(dispRity)
+library(ape)
+```
+
 # From observations to traitspaces
 
 Here we will look how to go from some observations to a traitspace in `R`.
 This step allows us to go from observed/collected data into a multidimensional traitspace that we can then analyse further for our research.
 
+![Types of morphological data - From @guillerme2020disparities](../images/figure_data.png)
+
 ## Reading data into `R`
 
 ### Continuous trait data
 
+This method is one of the easiest.
+Continuous data is often measured as standard physical units (e.g. meters, grams, seconds, etc.) and can be read directly from a data file in `R`.
+On easiest data file format is `csv` ("comma separated values") that is easily generated from most spreadsheet editor (usually they have an option "Save As... > .csv").
+These files look something like this:
+
+```
+         ,variable 1, variable 2
+species_a, 1.23, 4.56
+species_b, 7.89, 0.12
+```
+
+and can be read in `R` using `read.csv`:
+
+```{r, eval = FALSE}
+my_continuous_data <- read.csv("path_to_my_file.csv")
+```
+
+Simple as that.
+You can also use `read.csv(..., row.names = <column_number>` to directly read one column as the rownames:
+
+```{r, eval = FALSE}
+my_continuous_data <- read.csv("path_to_my_file.csv", row.names = 1)
+```
+
 ### Discrete trait data
 
-### Geometric morphometric data
+Discrete characters can be stored in a simple spreadsheet as for continuous traits:
 
-## Reading trees into `R`
+```
+         ,character 1, character 2
+species_a, 0, ?
+species_b, 0, 1
+```
+
+They can be input using the `read.csv` function as above. Easy.
+
+But more commonly, discrete morphological characters are stored in `.nexus`/`.nex` files.
+These are standardised comparative methods files with meta data and a list of characters.
+They are very commonly used both for molecular and morphological data.
+You can recognise them easily, they always start on the first line with `#NEXUS` and can contain more or less a lot of metadata.
+I'm not going to go in the details here but most of the time you can read them easily with `ape::read.nexus.data` or `Claddis::read_nexus_matrix`.
+
+```{r, eval = FALSE}
+discrete_traits <- read.nexus.data("path_to_my_file.nex")
+```
+
+Note that they can be a bit more complicated to input depending on how they were formated.
+Sometimes they require a bit of editing to avoid error messages.
+Here is a comprehensive list of things to look out for when importing discrete morphological characters:
+
+ * SPACES! 
+
+That's it. Basically all the problems come from extra spaces in the matrix chunk in the nexus file. To avoid any: only use spaces to separate the element name (species, genera, specimen, etc.) and the string of characters.
+For example this is a good format:
+
+```
+species_name 0100010???{01}11(0)001
+```
+
+But all these are gonna create problems:
+
+```
+species name 0100010???{01}11(01)001
+species_name 010001 0???{01}1 1(01)001
+species_name 0100010???{0 1}11(0 1)001
+```
+
+<!-- ### Geometric morphometric data 
+
+TODO
+
+-->
 
 ## Ordinations
 
+Method | Variables | Distances | `R` functions
+-------|-----------|----------------|---------------
+Principal component analyses (PCA) | Continuous | Euclidean (no need for a distance matrix) | `stats::prcomp`, `stats::princomp`
+Principal coordinates analysis (PCO, PCoA), Multidimensional scaling (MDS), Non-metric MDS (NMDS) | Continuous, discrete, complex | Any distance (needs a distance matrix) | `stats::cmdscale`
+
+(table adapted from @legendre2012numerical).
+
+### PCA
+
+<div class="warning" style='padding:0.1em; background-color:#FFAF49; color:#6D3D00'>
+<span>
+
+**CATCHING UP ZONE**: here's some example of continuous data if you didn't import your own:
+
+```{r}
+## Countinuous data
+continuous_data <- read.csv("../examples/continuous_characters/Brennan2024.csv",
+                            row.names = 1)
+```
+</div>
+
+To do a PCA, it's pretty simple, you can use the function `prcomp` or `princomp`.
+They are very different function in that they do the exact same things but their outputs have different names.
+To access the PCA matrix for `prcomp` you need to call `my_pca$x` and for `princomp` it's `my_pca$scores`.
+But they're fundamentally the same thing.
+Here is an example using 
+
+```{r}
+## Ordinating some data with prcomp
+my_ordination <- prcomp(continuous_data)
+## Getting the trait space
+my_traitspace <- my_ordination$x
+## Measuring the "loading" (the variance per dimension)
+my_loadings <- apply(my_traitspace, 2, var)/sum(apply(my_traitspace, 2, var))
+```
+
+Visualising the ordination of the data:
+
+```{r, fig.height = 6, fig.width = 12}
+op <- par(mfrow = c(1,2))
+## Plotting the original data
+plot(my_traitspace[, c(1,2)],
+     xlab = "dimension 1", ylab = "dimension 2", pch = 19)
+## Adding another plot with the loadings
+barplot(my_loadings, ylab = "% variance")
+par(op)
+```
+
+### PCO
+
+<div class="warning" style='padding:0.1em; background-color:#FFAF49; color:#6D3D00'>
+<span>
+
+**CATCHING UP ZONE**: here's some example of discrete data if you didn't import your own:
+
+```{r}
+## 421 discrete morphological characters
+discrete_traits <- read.nexus.data("../examples/discrete_characters/Beck2014.nex")
+```
+
+</div>
+
+PCOs are also pretty easy but unlike PCAs they require one extra step before ordinating the variance-covariance: calculating the distance matrix.
+
+#### Distance matrices
+
+There are many ways to calculate distance matrices from discrete morphological characters.
+See this very good review for more information: @lloyd2016estimating.
+In short the type of distance metric should depend on the quality of your data (amount of missing or uncertain data) and the type of characters (binary, ordered or not, etc.).
+
+
+
+
+Cailliez correction
+
+Because we used Gower distances instead of raw Euclidean distances, negative eigenvalues can be calculated. To avoid this problem, we first transformed the distance matrices by applying the Cailliez correction (Cailliez 1983) which adds a constant c* to the values in a distance matrix (apart from the diagonal) so that all the Gower distances become Euclidean (dGower + c* = dEuclidean; Cailliez 1983).
+
 ## Missing data
 
+
+## Reading trees into `R`
+
+
+
 ## Estimating ancestral traits
+
+
