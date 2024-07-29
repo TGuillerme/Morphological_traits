@@ -46,12 +46,21 @@ I will assume you are already familiar with basic `R`. The basic notions that I'
 
 #### Required packages
 
+For this tutorial we will be using the packages `ape` (@ape), `dispRity` (@dispRity)
+
 ```{r, eval = FALSE}
 required_packages <- c("ape", # for analysing phylogenetic data
-                       "dispRity", # for disparity analyses
-                       "Morpho", # for analysing geometric morphometric data)
+                       "dispRity")# for disparity analyses
 install.packages(required_packages)
 ```
+
+Note that you can also use the excellent following packages for more specific tasks not covered here:
+
+ * `Claddis` for analysing discrete morphological characters (@lloyd2018journeys)
+ * `paleotree` for analysing palaeo phylogenetic data (@bapst2012paleotree)
+ * `strap` (@strap) or `deeptime` (@deeptime) for plotting nice geological time scales
+ * `palaeoverse` (@palaeoverse) for wrangling palaeo data
+ * `Morpho` (@morpho) or `geomorph` (@geomorph) for analysing geometric morphometric data
 
 Let's get into it.
 
