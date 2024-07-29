@@ -51,6 +51,21 @@ my_continuous_data <- read.csv("path_to_my_file.csv", row.names = 1)
 
 ### Discrete trait data
 
+#### Glossary
+
+There are many specific terms when coming to discrete morphological characters, here is a list of some that I use (though note that the definitions here are my own, there is no standard or correct one!).
+My version is heavily inspired by @brazeau2011problematic.
+
+ * **character**: this is a trait (e.g.: "snout length")
+ * **state**: this is one of the potential discrete value the state can have for a specific species (e.g. "snout length: short, long")
+ * **token**: this the symbol used to represent the state for a specific character (e.g. "snout length: short (0), long (1)")
+ * **ordered**/**unordered**: this designates whether the character is ordered (e.g. "snout length: short, medium, long") or whether it is unordered (e.g. "habitat: aquatic, arboreal, fossorial")
+ * **ambiguity**: this designates whether the state for a specific species is known or not (see possible list below):
+ * **missing**: this is when the ambiguity is unknown: e.g. the feature to describe the character is not available. This is often encoded with the token `"?"`.
+ * **inapplicable**: this is when the ambiguity is known but not relevant: e.g. the character "Wing colour" for a dog (it's not missing, it just doesn't exist). This is often encoded with the token `"-"`.
+ * **uncertain**: this is when the state is unknown but only between certain states. For example, for a character "snout length: short(0), medium(1), long(2)" for a fossil species with a damaged snout (but that doesn't look short), we could code it as either "medium OR long" (often using the tokens: `"1/2"`).
+ * **polymorphic**: this is when a state has multiple observed states. For example, for the same character as before, a species could have both mediums AND long snouts (depending on the specimens). It is then often encoded using the tokens `"1&2"`.
+
 Discrete characters can be stored in a simple spreadsheet as for continuous traits:
 
 ```
@@ -81,7 +96,7 @@ That's it. Basically all the problems come from extra spaces in the matrix chunk
 For example this is a good format:
 
 ```
-species_name 0100010???{01}11(0)001
+species_name 0100010???{01}11(01)001
 ```
 
 But all these are gonna create problems:
@@ -107,15 +122,16 @@ Principal coordinates analysis (PCO, PCoA), Multidimensional scaling (MDS), Non-
 
 (table adapted from @legendre2012numerical).
 
-### PCA
+### Principal components analyses (PCA)
 
 <div class="warning" style='padding:0.1em; background-color:#FFAF49; color:#6D3D00'>
 <span>
 
-**CATCHING UP ZONE**: here's some example of continuous data if you didn't import your own:
+**CATCHING UP ZONE**: here's some example of continuous data if you didn't import your own.
+This is a dataset of 24 continuous measurements from 60 observations (species of skinks) from @brennan2024evolutionary :
 
 ```{r}
-## Countinuous data
+## Continuous data
 continuous_data <- read.csv("../examples/continuous_characters/Brennan2024.csv",
                             row.names = 1)
 ```
@@ -125,7 +141,6 @@ To do a PCA, it's pretty simple, you can use the function `prcomp` or `princomp`
 They are very different function in that they do the exact same things but their outputs have different names.
 To access the PCA matrix for `prcomp` you need to call `my_pca$x` and for `princomp` it's `my_pca$scores`.
 But they're fundamentally the same thing.
-Here is an example using 
 
 ```{r}
 ## Ordinating some data with prcomp
@@ -148,16 +163,19 @@ barplot(my_loadings, ylab = "% variance")
 par(op)
 ```
 
-### PCO
+### Principal coordinates analysis (PCO)
 
 <div class="warning" style='padding:0.1em; background-color:#FFAF49; color:#6D3D00'>
 <span>
 
-**CATCHING UP ZONE**: here's some example of discrete data if you didn't import your own:
+**CATCHING UP ZONE**: here's some example of discrete data if you didn't import your own.
+This is a dataset from @beck2014ancient of 106 mammal species (mainly fossils) and 421 characters.
 
 ```{r}
 ## 421 discrete morphological characters
 discrete_traits <- read.nexus.data("../examples/discrete_characters/Beck2014.nex")
+## Combine the output list into a matrix (rows are species and columns are characters)
+traits_matrix <- do.call(rbind, discrete_traits)
 ```
 
 </div>
@@ -170,20 +188,184 @@ There are many ways to calculate distance matrices from discrete morphological c
 See this very good review for more information: @lloyd2016estimating.
 In short the type of distance metric should depend on the quality of your data (amount of missing or uncertain data) and the type of characters (binary, ordered or not, etc.).
 
+The most comprehensive way to measure distance matrices can be done by using the `Claddis::calculate_morphological_distances` which allows for many many options to tailor the distance metric (and special behaviours) to your own dataset.
+
+However, here we will be using the more generic `dispRity::char.diff` function that is faster but is designed for a more general purpose so lacks some of the options from `Claddis`.
+
+```{r}
+## Calculating the maximum observable distance
+distance_matrix <- char.diff(traits_matrix, method = "mord", by.col = FALSE)
+```
+
+Note that here we are going all by default which is useful to get everyone on board for a workshop but is definitely not what you should do for your research!
+Always have a look at the default hidden options and what they're doing!
+
+For example in this instance with the data from @beck2014ancient we treated all the characters as unordered (you can change that with the option `order = c(TRUE, FALSE, TRUE, ...)` for every character if they are to be treated as ordered (`TRUE`) or not (`FALSE`)).
+Also, we have decided to treat encoded ambiguities in a standard default way where question marks (`"?"`) are treated as missing values and interpreted as all possible character states and `"\"` designated ambiguous characters and where treated as any ambiguous state marked here (e.g. `"0\2"` is either state `0` or `2` - but not any other state, e.g. `1`).
+You can personalise the way you want to interpret these characters by giving a different list of token definition and 
+
+```{r}
+## Calculating the maximum observable distance
+distance_matrix2 <- char.diff(traits_matrix, method = "mord", by.col = FALSE,
+                              # defining the special token and it's name
+                              special.tokens = c("missing" = "\\?"),
+                              # defining the behaviour (always returning 1, the first state)
+                              special.behaviour = list(missing = function(x,y) return(1))
+                              )
+```
+
+This change results in a very different distance matrix (and is probably not very pertinent for this specific dataset!).
 
 
+```{r, fig.height = 6, fig.width = 12}
+op <- par(mfrow = c(1,2))
+## Plotting the original data
+plot(distance_matrix, main = "? = any state")
+## Adding another plot with the loadings
+plot(distance_matrix2, main = "? = state 0")
+par(op)
+```
 
-Cailliez correction
+#### PCO
 
-Because we used Gower distances instead of raw Euclidean distances, negative eigenvalues can be calculated. To avoid this problem, we first transformed the distance matrices by applying the Cailliez correction (Cailliez 1983) which adds a constant c* to the values in a distance matrix (apart from the diagonal) so that all the Gower distances become Euclidean (dGower + c* = dEuclidean; Cailliez 1983).
+Once you have a distance matrix, you can ordinated it using the `cmdscale` function which works similarly to a Principal Components Analysis.
+One minor subtlety though is that you have to choose the number of dimensions (`k`) and might or might not use a correction to treat the distance matrix as Euclidean or not.
+Regarding the number of dimensions, a good practice is to use the number of species minus 2 to allow for the biggest spread of the variance (i.e. to avoid cramming the variance in the first dimensions).
+Regarding the correction, if you don't use a simple Euclidean distance metric, use the option `add = TRUE` to use the @cailliez1983analytical correction (which adds an estimated constant to make the distances Euclidean).
 
-## Missing data
+```{r}
+## Ordinating a distance matrix
+my_pco <- cmdscale(distance_matrix,
+                   # the number of dimensions
+                   k = ncol(distance_matrix)-2,
+                   # the Cailliez correction
+                   add = TRUE)
 
+## Getting just the coordinates
+my_traitspace <- my_pco$points
+my_loadings <- apply(my_traitspace, 2, var)/sum(apply(my_traitspace, 2, var))
+```
 
-## Reading trees into `R`
+And we can visualise the first two dimensions and the distribution of the variance per dimensions:
 
+```{r, fig.height = 6, fig.width = 12}
+op <- par(mfrow = c(1,2))
+## Plotting the original data
+plot(my_traitspace[, c(1,2)],
+     xlab = "dimension 1", ylab = "dimension 2", pch = 19)
+## Adding another plot with the loadings
+barplot(my_loadings, ylab = "% variance")
+par(op)
+```
 
+<!-- ## Missing data 
+-->
 
 ## Estimating ancestral traits
 
+### Reading trees into `R`
 
+Reading phylogenetic trees in R is rather easy: you can use either the `ape::read.tree` function for reading a tree in newick format (a text file starting with "(") or `ape::read.nexus` for reading a nexus tree (a text file starting with "#NEXUS"). 
+
+> `read.tree` or `read.nexus`? Can't decide which one to use? You can use this custom made function that will always decide for you:
+
+```{r}
+read.any.tree <- function(file) {
+    ## Check whether the first line of the file is "#NEXUS"
+    if(scan(what = "#NEXUS", file = file, nlines = 1, quiet = TRUE) == "#NEXUS") {
+        ## The tree is a true nexus
+        return(read.nexus(file))
+    } else {
+        ## The tree is a true newick
+        return(read.tree(file))
+    }
+}
+```
+
+```{r, eval = FALSE}
+## Reading a newick tree
+my_tree <- read.tree("path_to_my_file.newick")
+## Reading a nexus tree
+my_tree <- read.nexus("path_to_my_file.nexus")
+## Reading any tree
+my_tree <- read.any.tree("path_to_my_file.dontknow")
+```
+
+<div class="warning" style='padding:0.1em; background-color:#FFAF49; color:#6D3D00'>
+<span>
+
+**CATCHING UP ZONE**: here's some example of discrete and continuous data and tree if you didn't import your own.
+
+This first chunk is a continuous dataset of 24 measurements from 60 observations (species of skinks) from @brennan2024evolutionary :
+
+```{r}
+## Get the continuous
+continuous_data <- read.csv("../examples/continuous_characters/Brennan2024.csv",
+                            row.names = 1)
+## Get the tree
+continous_tree <- read.tree("../examples/trees/Brennan2024.tre")
+
+## Cleaning both the tree and the data to match
+cleaned_data    <- clean.data(data = continuous_data, tree = continous_tree)
+continuous_data <- cleaned_data$data
+continous_tree  <- cleaned_data$tree
+## The following were dropped:
+cleaned_data$dropped_rows
+cleaned_data$dropped_tips
+```
+
+This second chunk is a discrete dataset from @beck2014ancient of 106 mammal species (mainly fossils) and 421 characters and the associated tree.
+
+```{r}
+## Get discrete data
+discrete_traits <- read.nexus.data("../examples/discrete_characters/Beck2014.nex")
+## Combine the output list into a matrix (rows are species and columns are characters)
+discrete_matrix <- do.call(rbind, discrete_traits)
+## Get the tree
+discrete_tree <- read.nexus("../examples/trees/Beck2014.tre")
+
+## Cleaning both the tree and the data to match
+cleaned_data    <- clean.data(data = discrete_matrix, tree = discrete_tree)
+discrete_matrix <- cleaned_data$data
+discrete_tree   <- cleaned_data$tree
+## The following were dropped:
+cleaned_data$dropped_rows
+cleaned_data$dropped_tips
+```
+
+</div>
+
+### Estimating ancestral traits
+
+There are many ways to estimate ancestral trait data in which I will not go into to much details.
+I will not go into the details on _how_ ancestral traits are calculated because 1) that would be a whole course on likelihood estimation and model fitting and 2) all that would just be to calculate "glorified" averages.
+So for this reason I'm just going to focus on on way to do it but note that there are many ways to do it and many options to consider.
+My favourites are:
+
+ * `ape::ace` for estimating ancestral traits for both continuous and discrete traits.
+ * `dispRity::multi.ace` an updated version of `ape::ace` dealing with continuous characters and discrete ones (but with more options) and that can handle tree distributions (we will look at this one here).
+ * `Claddis::estimate_ancestral_states` which is more specialized in estimating ancestral states for discrete characters. It noticeably has cool models for dealing with inapplicable data!
+
+> Note that I have strong personal views on estimating ancestral traits: it is a useful tool for running some analyses (as we will see in next chapters) but it remains a very an impossible task, no matter how good the model and the data: unless we observe ancestral data (e.g. in the fossil record) we can only have a more or less vague idea of what the ancestral trait value could have been. If you use such methods for your research, I highly suggest you don't use point estimates (i.e. single values) but rather distributions: both for the estimate and for the tree topology used for the estimation.
+
+```{r, eval = FALSE}
+## Estimating ancestral traits for continuous characters
+multi.ace()
+
+## Visualisation with treats
+
+## Reordinating the data
+```
+
+
+```{r, eval = FALSE}
+## Estimating ancestral traits for discrete characters characters
+multi.ace()
+
+## Visualisation with treats
+
+## Reordinating the data
+```
+
+
+## References

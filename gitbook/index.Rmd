@@ -80,3 +80,5 @@ Multidimensional analysis | Dissimilarity analysis, trait analysis, etc. | Dispa
 
 Note that here traits are treated as unidimensional (i.e. one column = one trait) but it doesn't need to be the case!
 For example you can have a multidimensional trait that is described using multiple numbers (a multidimensional trait), for the trait "location" can be described using both latitude and longitude (a 2D trait).
+
+## References
