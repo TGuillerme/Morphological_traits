@@ -14,6 +14,8 @@
     * All this is available as a bookdown file. This means that you can follow along with me through the code in your favourite IDE (e.g. R studio) or just look at the slides.
       > Suggest: download a copy of the book and edit it for note taking etc.
       > TODO: add some kind of magnifying glass logo for searchable "anchors" in the book.
+      > "CATCHING UP" tags to follow along.
+
     * I am going to switch between both all the time: the slides for when I'm rambling and the IDE for when I'm coding.
  4. Insist in open research + collaboration (links back to About me)
     * All this is done in bookdown (ask me more about it during the break) and is under CC0 licence. This means you can (re)use it, share it, modify it, do whatever you want with it.

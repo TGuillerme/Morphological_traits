@@ -46,11 +46,12 @@ I will assume you are already familiar with basic `R`. The basic notions that I'
 
 #### Required packages
 
-For this tutorial we will be using the packages `ape` (@ape), `dispRity` (@dispRity)
+For this tutorial we will be using the packages `ape` (@ape), `dispRity` (@dispRity) and `treats` (@treats):
 
 ```{r, eval = FALSE}
 required_packages <- c("ape", # for analysing phylogenetic data
-                       "dispRity")# for disparity analyses
+                       "dispRity", # for disparity analyses
+                       "treats") # for some trees and traits plots
 install.packages(required_packages)
 ```
 

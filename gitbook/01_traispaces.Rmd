@@ -12,6 +12,7 @@ output:
 ## The packages to load for the section
 library(dispRity)
 library(ape)
+library(treats)
 ```
 
 # From observations to traitspaces
@@ -141,6 +142,7 @@ To do a PCA, it's pretty simple, you can use the function `prcomp` or `princomp`
 They are very different function in that they do the exact same things but their outputs have different names.
 To access the PCA matrix for `prcomp` you need to call `my_pca$x` and for `princomp` it's `my_pca$scores`.
 But they're fundamentally the same thing.
+Here's how to compute it as well as measuring the loadings, i.e. the amount of variance explained per dimensions:
 
 ```{r}
 ## Ordinating some data with prcomp
@@ -149,6 +151,13 @@ my_ordination <- prcomp(continuous_data)
 my_traitspace <- my_ordination$x
 ## Measuring the "loading" (the variance per dimension)
 my_loadings <- apply(my_traitspace, 2, var)/sum(apply(my_traitspace, 2, var))
+```
+
+Alternatively you can calculate the loadings by using the `$sdev` component that is the square root of the eigenvalues (so the loadings are the scaled squared `$sdev` component) but personally I prefer calculating it using the variance (I find it easier to understand).
+
+```{r}
+## Alternatively variance loading calculation
+my_ordination$sdev^2/sum(my_ordination$sdev^2)
 ```
 
 Visualising the ordination of the data:
@@ -305,6 +314,9 @@ continuous_data <- read.csv("../examples/continuous_characters/Brennan2024.csv",
 ## Get the tree
 continous_tree <- read.tree("../examples/trees/Brennan2024.tre")
 
+## Adding node labels
+continous_tree <- makeNodeLabel(continous_tree)
+
 ## Cleaning both the tree and the data to match
 cleaned_data    <- clean.data(data = continuous_data, tree = continous_tree)
 continuous_data <- cleaned_data$data
@@ -313,6 +325,7 @@ continous_tree  <- cleaned_data$tree
 cleaned_data$dropped_rows
 cleaned_data$dropped_tips
 ```
+
 
 This second chunk is a discrete dataset from @beck2014ancient of 106 mammal species (mainly fossils) and 421 characters and the associated tree.
 
@@ -348,13 +361,53 @@ My favourites are:
 
 > Note that I have strong personal views on estimating ancestral traits: it is a useful tool for running some analyses (as we will see in next chapters) but it remains a very an impossible task, no matter how good the model and the data: unless we observe ancestral data (e.g. in the fossil record) we can only have a more or less vague idea of what the ancestral trait value could have been. If you use such methods for your research, I highly suggest you don't use point estimates (i.e. single values) but rather distributions: both for the estimate and for the tree topology used for the estimation.
 
-```{r, eval = FALSE}
-## Estimating ancestral traits for continuous characters
-multi.ace()
+```{r}
+## Selecting a specific trait:
+snout_vent <- continuous_data[,1]
+names(snout_vent) <- rownames(continuous_data)
 
-## Visualisation with treats
+## Estimating the ancestral states for this trait
+ancestral_snout_vent <- ace(snout_vent, continous_tree)
 
-## Reordinating the data
+## Combining the tips and the ancestral values
+ancestral_values <- ancestral_snout_vent$ace
+snout_vent_data <- as.matrix(data.frame("snout vent" = c(snout_vent, ancestral_values))
+
+## Plotting the data (using the treats package)
+treats_data <- make.treats(continous_tree, data = snout_vent_data)
+plot(treats_data)
+```
+
+This look all good and realistic (i.e. the ancestor of this group has a trait value that is a scaled average of the observed species).
+However, if we have a look at the errors around the estimations, we have a whole different story!
+
+```{r}
+## Plotting the trait data
+plot(treats_data, ylim = range(ancestral_snout_vent$CI95))
+abline(h = 0, lty = 2, lwd = 0.2)
+## Get the node ages
+node_ages <- tree.age(continous_tree)$age[-c(1:Ntip(continous_tree))]
+## Get the 95% confidence interval for each node estiamte
+confidence_intervals <- ancestral_snout_vent$CI95
+## Plotting each confidence interval
+for(one_node in 1:Nnode(continuous_tree)) {
+  lines(x = rep(node_ages[one_node], 2), y = confidence_intervals[one_node,], col = "orange", lwd = 0.5)
+}
+```
+
+So that's not that great!
+
+#### How to improve this mess?
+
+ * Be cautious about ancestral state estimations: they are just that (estimations! - not *reconstructions*).
+ * Whenever possible, use multiple trees to account for topological error.
+ * Whenever possible, use the distribution of estimates rather than point estimates.
+ * Whenever possible, use multiple traits rather than a single one.
+
+
+```{r}
+## Running the ancestral states for all the traits
+ancestral_states <- multi.ace(continuous_data, continous_tree)
 ```
 
 

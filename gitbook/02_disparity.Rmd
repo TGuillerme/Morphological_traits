@@ -12,7 +12,24 @@ output:
 
 ## Reducing the number of dimensions
 
+```{r}
+## 
+data(BeckLee_mat99)
+traitspaces <- BeckLee_mat99
+```
+
+```{r}
+##
+select.axes()
+```
+
+
 ## Measuring disparity
+
+### The curse of dimensionality
+
+Measure volume at different levels
+
 
 ### Which disparity metric to use?
 
