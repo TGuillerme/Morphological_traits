@@ -37,18 +37,22 @@ species_a, 1.23, 4.56
 species_b, 7.89, 0.12
 ```
 
-and can be read in `R` using `read.csv`:
+and can be read in `R` using `read.csv`.
+
+<div class="warning" style='padding:0.1em; background-color:#5D7BBB; color:#092663'>
+
+**USE YOUR DATA**: load your own continuous data
 
 ```{r, eval = FALSE}
 my_continuous_data <- read.csv("path_to_my_file.csv")
 ```
 
-Simple as that.
 You can also use `read.csv(..., row.names = <column_number>` to directly read one column as the rownames:
 
 ```{r, eval = FALSE}
 my_continuous_data <- read.csv("path_to_my_file.csv", row.names = 1)
 ```
+</div>
 
 ### Discrete trait data
 
@@ -83,9 +87,15 @@ They are very commonly used both for molecular and morphological data.
 You can recognise them easily, they always start on the first line with `#NEXUS` and can contain more or less a lot of metadata.
 I'm not going to go in the details here but most of the time you can read them easily with `ape::read.nexus.data` or `Claddis::read_nexus_matrix`.
 
+
+<div class="warning" style='padding:0.1em; background-color:#5D7BBB; color:#092663'>
+
+**USE YOUR DATA**: load your own discrete data
+
 ```{r, eval = FALSE}
 discrete_traits <- read.nexus.data("path_to_my_file.nex")
 ```
+</div>
 
 Note that they can be a bit more complicated to input depending on how they were formated.
 Sometimes they require a bit of editing to avoid error messages.
@@ -125,8 +135,7 @@ Principal coordinates analysis (PCO, PCoA), Multidimensional scaling (MDS), Non-
 
 ### Principal components analyses (PCA)
 
-<div class="warning" style='padding:0.1em; background-color:#FFAF49; color:#6D3D00'>
-<span>
+<div class="warning" style='padding:0.1em; background-color:#FFAF70; color:#954200'>
 
 **CATCHING UP ZONE**: here's some example of continuous data if you didn't import your own.
 This is a dataset of 24 continuous measurements from 60 observations (species of skinks) from @brennan2024evolutionary :
@@ -174,8 +183,7 @@ par(op)
 
 ### Principal coordinates analysis (PCO)
 
-<div class="warning" style='padding:0.1em; background-color:#FFAF49; color:#6D3D00'>
-<span>
+<div class="warning" style='padding:0.1em; background-color:#FFAF70; color:#954200'>
 
 **CATCHING UP ZONE**: here's some example of discrete data if you didn't import your own.
 This is a dataset from @beck2014ancient of 106 mammal species (mainly fossils) and 421 characters.
@@ -235,6 +243,34 @@ plot(distance_matrix2, main = "? = state 0")
 par(op)
 ```
 
+<div class="warning" style='padding:0.1em; background-color:#65D85F; color:#067800'>
+
+**TINKER TIMES**: You can also play around with the different type of distance metrics and see how that affects the results by changing the option `method`.
+Have a read in the manual for the details (`?char.diff`).
+
+<details>
+  <summary>[**Click to expand the solution**]:
+</summary>
+
+```{r, fig.height = 12, fig.width = 12}
+## Four different metrics
+distance_mord      <- char.diff(traits_matrix, method = "mord", by.col = FALSE)
+distance_hamming   <- char.diff(traits_matrix, method = "hamming", by.col = FALSE)
+distance_euclidean <- char.diff(traits_matrix, method = "euclidean", by.col = FALSE)
+distance_manhattan <- char.diff(traits_matrix, method = "manhattan", by.col = FALSE)
+
+## Plotting the results
+op <- par(mfrow = c(2,2))
+plot(distance_mord, main = "mord")
+plot(distance_hamming, main = "hamming")
+plot(distance_euclidean, main = "euclidean")
+plot(distance_manhattan, main = "manhattan")
+par(op)
+```
+
+</details>
+</div>
+
 #### PCO
 
 Once you have a distance matrix, you can ordinated it using the `cmdscale` function which works similarly to a Principal Components Analysis.
@@ -267,7 +303,8 @@ barplot(my_loadings, ylab = "% variance")
 par(op)
 ```
 
-<!-- ## Missing data 
+<!--
+## Missing data 
 -->
 
 ## Estimating ancestral traits
@@ -300,8 +337,7 @@ my_tree <- read.nexus("path_to_my_file.nexus")
 my_tree <- read.any.tree("path_to_my_file.dontknow")
 ```
 
-<div class="warning" style='padding:0.1em; background-color:#FFAF49; color:#6D3D00'>
-<span>
+<div class="warning" style='padding:0.1em; background-color:#FFAF70; color:#954200'>
 
 **CATCHING UP ZONE**: here's some example of discrete and continuous data and tree if you didn't import your own.
 
@@ -312,20 +348,19 @@ This first chunk is a continuous dataset of 24 measurements from 60 observations
 continuous_data <- read.csv("../examples/continuous_characters/Brennan2024.csv",
                             row.names = 1)
 ## Get the tree
-continous_tree <- read.tree("../examples/trees/Brennan2024.tre")
+continuous_tree <- read.tree("../examples/trees/Brennan2024.tre")
 
 ## Adding node labels
-continous_tree <- makeNodeLabel(continous_tree)
+continuous_tree <- makeNodeLabel(continuous_tree)
 
 ## Cleaning both the tree and the data to match
-cleaned_data    <- clean.data(data = continuous_data, tree = continous_tree)
+cleaned_data    <- clean.data(data = continuous_data, tree = continuous_tree)
 continuous_data <- cleaned_data$data
-continous_tree  <- cleaned_data$tree
+continuous_tree  <- cleaned_data$tree
 ## The following were dropped:
 cleaned_data$dropped_rows
 cleaned_data$dropped_tips
 ```
-
 
 This second chunk is a discrete dataset from @beck2014ancient of 106 mammal species (mainly fossils) and 421 characters and the associated tree.
 
@@ -333,14 +368,14 @@ This second chunk is a discrete dataset from @beck2014ancient of 106 mammal spec
 ## Get discrete data
 discrete_traits <- read.nexus.data("../examples/discrete_characters/Beck2014.nex")
 ## Combine the output list into a matrix (rows are species and columns are characters)
-discrete_matrix <- do.call(rbind, discrete_traits)
+discrete_data <- do.call(rbind, discrete_traits)
 ## Get the tree
 discrete_tree <- read.nexus("../examples/trees/Beck2014.tre")
 
 ## Cleaning both the tree and the data to match
-cleaned_data    <- clean.data(data = discrete_matrix, tree = discrete_tree)
-discrete_matrix <- cleaned_data$data
-discrete_tree   <- cleaned_data$tree
+cleaned_data  <- clean.data(data = discrete_data, tree = discrete_tree)
+discrete_data <- cleaned_data$data
+discrete_tree <- cleaned_data$tree
 ## The following were dropped:
 cleaned_data$dropped_rows
 cleaned_data$dropped_tips
@@ -367,14 +402,14 @@ snout_vent <- continuous_data[,1]
 names(snout_vent) <- rownames(continuous_data)
 
 ## Estimating the ancestral states for this trait
-ancestral_snout_vent <- ace(snout_vent, continous_tree)
+ancestral_snout_vent <- ace(snout_vent, continuous_tree)
 
 ## Combining the tips and the ancestral values
 ancestral_values <- ancestral_snout_vent$ace
-snout_vent_data <- as.matrix(data.frame("snout vent" = c(snout_vent, ancestral_values))
+snout_vent_data <- as.matrix(data.frame("snout vent" = c(snout_vent, ancestral_values)))
 
 ## Plotting the data (using the treats package)
-treats_data <- make.treats(continous_tree, data = snout_vent_data)
+treats_data <- make.treats(continuous_tree, data = snout_vent_data)
 plot(treats_data)
 ```
 
@@ -386,7 +421,7 @@ However, if we have a look at the errors around the estimations, we have a whole
 plot(treats_data, ylim = range(ancestral_snout_vent$CI95))
 abline(h = 0, lty = 2, lwd = 0.2)
 ## Get the node ages
-node_ages <- tree.age(continous_tree)$age[-c(1:Ntip(continous_tree))]
+node_ages <- tree.age(continuous_tree)$age[-c(1:Ntip(continuous_tree))]
 ## Get the 95% confidence interval for each node estiamte
 confidence_intervals <- ancestral_snout_vent$CI95
 ## Plotting each confidence interval
@@ -404,21 +439,58 @@ So that's not that great!
  * Whenever possible, use the distribution of estimates rather than point estimates.
  * Whenever possible, use multiple traits rather than a single one.
 
+But for now we can just go ahead and keep these caveats in mind.
+You can use the `dispRity::multi.ace` function to estimate ancestral trait values for large datasets and use tree distributions:
 
 ```{r}
-## Running the ancestral states for all the traits
-ancestral_states <- multi.ace(continuous_data, continous_tree)
+## Running the ancestral states for all the traits (it should take a couple of seconds)
+ancestral_states <- multi.ace(continuous_data, continuous_tree)
 ```
 
+With the same caveats in mind, we can do the same for discrete traits using still `multi.ace`.
+Note that some of the syntax here is the same as we've seen for `char.diff`: there is a lot of room for personalisation to tailor the token interpretations and behaviour, the models, etc...
+Here we will use the option `output = "combined"` to get a combined matrix (tips + nodes) for ease of use.
 
 ```{r, eval = FALSE}
 ## Estimating ancestral traits for discrete characters characters
-multi.ace()
-
-## Visualisation with treats
-
-## Reordinating the data
+ancestral_states <- multi.ace(discrete_data, discrete_tree, output = "combined")
 ```
 
+We can then use this new matrix with ancestral states to re-calculate distances (the same as before but including the nodes).
+
+<div class="warning" style='padding:0.1em; background-color:#65D85F; color:#067800'>
+
+**TINKER TIMES**: see if you remember how to do it by just copy/pasting chunks from above.
+
+<details>
+  <summary>[**Click to expand the solution**]:
+</summary>
+
+```{r, fig.height = 6, fig.width = 12}
+## Calculating the distance matrix
+distance_matrix <- char.diff(ancestral_states, method = "mord", by.col = FALSE)
+
+## Ordinating the data
+my_pco <- cmdscale(distance_matrix,
+                   # the number of dimensions
+                   k = ncol(distance_matrix)-2,
+                   # the Cailliez correction
+                   add = TRUE)
+
+## Getting just the coordinates
+my_traitspace <- my_pco$points
+my_loadings <- apply(my_traitspace, 2, var)/sum(apply(my_traitspace, 2, var))
+
+op <- par(mfrow = c(1,2))
+## Plotting the original data
+plot(my_traitspace[, c(1,2)],
+     xlab = "dimension 1", ylab = "dimension 2", pch = 19)
+## Adding another plot with the loadings
+barplot(my_loadings, ylab = "% variance")
+par(op)
+```
+
+</details>
+</div>
 
 ## References
