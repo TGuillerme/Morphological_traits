@@ -135,6 +135,8 @@ Principal coordinates analysis (PCO, PCoA), Multidimensional scaling (MDS), Non-
 
 ### Principal components analyses (PCA)
 
+<!-- SLIDES: ordinations -->
+
 <div class="warning" style='padding:0.1em; background-color:#FFAF70; color:#954200'>
 
 **CATCHING UP ZONE**: here's some example of continuous data if you didn't import your own.
@@ -200,6 +202,8 @@ traits_matrix <- do.call(rbind, discrete_traits)
 PCOs are also pretty easy but unlike PCAs they require one extra step before ordinating the variance-covariance: calculating the distance matrix.
 
 #### Distance matrices
+
+<!-- SLIDES: distances -->
 
 There are many ways to calculate distance matrices from discrete morphological characters.
 See this very good review for more information: @lloyd2016estimating.
@@ -451,7 +455,7 @@ With the same caveats in mind, we can do the same for discrete traits using stil
 Note that some of the syntax here is the same as we've seen for `char.diff`: there is a lot of room for personalisation to tailor the token interpretations and behaviour, the models, etc...
 Here we will use the option `output = "combined"` to get a combined matrix (tips + nodes) for ease of use.
 
-```{r, eval = FALSE}
+```{r}
 ## Estimating ancestral traits for discrete characters characters
 ancestral_states <- multi.ace(discrete_data, discrete_tree, output = "combined")
 ```

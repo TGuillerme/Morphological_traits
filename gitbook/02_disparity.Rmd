@@ -8,9 +8,118 @@ output:
   pdf_document: default
 ---
 
+```{r, echo = FALSE}
+library(dispRity)
+```
+
 # From traitspaces to disparity
 
-## Reducing the number of dimensions
+Once you have created your traitspace, you can then measure disparity.
+But was is disparity?
+It depends.
+
+There are many different definitions, some are more narrow that others but all agree on the same vague idea that disparity is a statistic that summaries a group's space occupancy.
+Basically a measurement of how elements are distributed in space based on their characteristics (e.g. traits) and very often used to compare groups between each other based on that measurement.
+For example is disparity higher in group X or Y?
+It can be often easily opposed to "taxonomic diversity" (i.e. number of species).
+Basically for this workshop we will define disparity as the diversity of traits combinations which can tell us something about the biology of a system. 
+
+This definition is not universal among palaeobiologists: for example, some colleagues use a more restricted definition of the term (e.g. in @hopkins2021morphological - not OA; [sneaky download from here](http://tguillerme.github.io/papers/Hopkins&Gerber-2017-Disparity.pdf) - I think more inspired by historical definitions).
+I use the more broad defintion that we discuss here @guillerme2020disparities (maybe more inspired by ecology).
+
+> Note that in palaeobiology we call this statistic "disparity", "morphological disparity" or "trait disparity" but they are all the same concept.
+Even more noteworthy, this is a concept that is also routinely used in ecology but often called "trait dissimilarity" or "functional diversity".
+There is a very rich literature on it that I highly recommend to read to learn more about how this concept has been studied globally.
+Check out @petchey2006functional and @mammola2021concepts as great starting points.
+
+
+## Measuring disparity
+
+From this broad definition of disparity, there is many many ways to measure it.
+With some colleagues, we strongly argue that it should always be measured in regards to a biological question: i.e. measure it the way it will answer *your specific question*, not just the way other people have done it (@moms, @mammola2021concepts, @guillerme2024and),
+But we will see in more details how to do that later.
+
+Let's use a super simple case where we want to measure the standard deviation in the traitspace as our disparity metric[^2].
+This could be used for answering a simple question "how spread is the trait combination in our dataset".
+
+[^2]: **Disparity metric or disparity index?**. You might encounter both terms which designate the same thing: a disparity statistic. Some people prefer using the term "index" because a "metric" has a specific definition in mathematics (i.e. not all indices or statistics are metrics). Some other people prefer using the term "metric" (e.g. myself) because the term "index" has a specific definition in informatics (i.e. an index is a numbered element in a list). Tomato tomato.
+
+<div class="warning" style='padding:0.1em; background-color:#FFAF70; color:#954200'>
+
+**CATCHING UP ZONE**: here's an example of a traitspace made from continuous data.
+But please, feel free to use your own!
+
+```{r}
+## An inbuilt ordination directly from the dispRity package
+data(BeckLee_mat50)
+my_traitspace <- BeckLee_mat50
+```
+</div>
+
+```{r}
+## The basics for measuring standard deviation
+sd(my_traitspace)
+```
+
+One other way to achieve the exact same results is through the `dispRity` function from the eponymous package.
+This is a bit pointless and cumbersome for now but it will become more obviously useful later on.
+
+
+```{r}
+## Same but using the dispRity package
+my_dispRity <- dispRity(my_traitspace, metric = sd)
+summary(my_dispRity)
+```
+
+So that's it! You've now measured disparity.
+Well done.
+We will talk more about what to measure in a bit but first I want to chat about... ***The multidimensional nightmare***
+
+## The curse of dimensionality
+
+<!-- SLIDES: hypervolume -->
+
+Basically this is a problem you get very easily when you go beyond anything three dimensional.
+When increasing the number of dimensions in your dataset things become very quickly intuitive and headache inducing, even after working on it for many years.
+Depending on how your brain works, you will have to take some leap of faith here and assume that what you see and understand is not always correct when you pile up a higher number of dimensions!
+
+<div class="warning" style='padding:0.1em; background-color:#65D85F; color:#067800'>
+
+**TINKER TIMES**: have a think of how the volume of your traitspace will change with the number of dimensions.
+
+<details>
+  <summary>[**Click to visualise what your data is doing**]:
+</summary>
+
+```{r}
+## Measuring the volume for each additional dimensions
+## A placeholder for the loop results
+volumes <- numeric()
+
+for(dimension in 2:ncol(my_traitspace)) {
+  ## Calculating for each number of column the product of ranges
+  new_volume <- prod( # the product
+    apply(my_traitspace[, 1:dimension], 2, # apply a function for the selected columns (2)
+      function(x) diff(range(x)))) ## calculate the difference between the range of the column (max - min)
+  ## Add it to our volume placeholder
+  volumes <- c(volumes, new_volume)
+}
+
+## Plot the volumes per number of dimensions
+plot(x = 2:ncol(my_traitspace),
+     y = volumes,
+     type = "l", 
+     xlab = "number of dimensions",
+     ylab = "volume")
+```
+
+</details>
+</div>
+
+Congratulations, you now know about the curse of multidimensionality!
+We can see this [excellent illustration by Toph Tucker](https://observablehq.com/@tophtucker/theres-plenty-of-room-in-the-corners) to have a grasp of what is happening here.
+
+### Reducing the number of dimensions
 
 <div class="warning" style='padding:0.1em; background-color:#FFAF70; color:#954200'>
 
@@ -19,27 +128,35 @@ output:
 ```{r}
 ## Loading some example data
 data(demo_data)
-traitspace <- demo_data$wrights
+traitspace <- demo_data$hopkins
 ```
 </div>
 
-How many dimensions do we need?
+For very large datasets, it can be useful to reduce the number of dimensions to avoid the curse as much as possible.
+This is especially the case if you use a PCA to build your traitspace.
+Because it ordinates your data per ranking variance, you end up with most variance in the first couple of dimensions.
+Often, you can reduce the number of dimensions so you have a cut-off of the *n* first dimensions that include *X* percentage of the variance in your traitspace.
+Usually this *X* is 95% or 99%.
+
+One thing to keep in mind though when you do this is that if you have groups in your traitspace (we will see how to do this later), you might want to check whether they are all equally distributed along those axes.
+For example, a reduced traitspace with 95% of the total variance does not automatically means a traitspace with at least 95% of the variance for each group.
+
+<!-- SLIDES: duck axis -->
 
 ```{r}
 ## How many axes are needed
-axes_selection <- select.axes(traitspace)
-plot(axes_selection)
-summary(axes_selection)
+axes_selection <- select.axes(traitspace, threshold = 0.95)
+plot(select.axes(demo_data$hopkins))
 ```
 
 
-## Measuring disparity
+## Which disparity metric to use?
 
-### The curse of dimensionality
+@moms
+@mammola2021concepts
+@guillerme2024and
 
-Measure volume at different levels
-
-
-### Which disparity metric to use?
 
 ### Testing disparity metrics
+
+## References
