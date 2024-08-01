@@ -12,15 +12,24 @@ output:
 
 ## Reducing the number of dimensions
 
-```{r}
-## 
-data(BeckLee_mat99)
-traitspaces <- BeckLee_mat99
-```
+<div class="warning" style='padding:0.1em; background-color:#FFAF70; color:#954200'>
+
+**CATCHING UP ZONE**: loading some example data!
 
 ```{r}
-##
-select.axes()
+## Loading some example data
+data(demo_data)
+traitspace <- demo_data$wrights
+```
+</div>
+
+How many dimensions do we need?
+
+```{r}
+## How many axes are needed
+axes_selection <- select.axes(traitspace)
+plot(axes_selection)
+summary(axes_selection)
 ```
 
 
