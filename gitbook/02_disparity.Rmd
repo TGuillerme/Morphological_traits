@@ -149,12 +149,26 @@ axes_selection <- select.axes(traitspace, threshold = 0.95)
 plot(select.axes(demo_data$hopkins))
 ```
 
-
 ## Which disparity metric to use?
 
-@moms
-@mammola2021concepts
-@guillerme2024and
+So which disparity metric should you be using?
+It's very easy: ***IT DEPENDS***.
+In the next section we will be looking in more details what kind of analyses we can do with disparity and what kind of questions we can ask with such approach.
+But basically, it's all about tailoring the disparity metric to your own specific question.
+
+We have done some work on which metrics to choose with colleagues (@moms, @mammola2021concepts - but other great one exist e.g. @ciampaglio2001detecting, @petchey2006functional, @stewart2023).
+Usually, most of these consist in comparing the effect of different metrics at capturing the correct pattern or their sensitivity to missing data.
+This is very important of course but I think it's lacking a didactic aspect that would help people with no idea what to measure on how to measure.
+We discuss this in this preprint @guillerme2024and.
+
+Basically we believe that for choosing a metric, rather than starting with a metric's property, it might be easier to start with the question at hand.
+You can separate part of your statistical research into three components:
+
+ * The *mechanism*: that is the biological question at hand and usually has the word *"why"* in it. For example: "why do mass extinction change the disparity of the groups that survive the mass extinction?". The *why* here is the *mechanism* by which disparity can change in groups due to mass extinctions (i.e. some biology).
+ * The *process*: this is the dynamic change that makes your question interesting and usually has the word *"how"* in it. For example: "how does disparity change before and after the mass extinction?". The *how* here is the *process* by which disparity changes through time. This is not especially a biological question (although it ultimately will be) because you can just ask yourself *how* without asking *why* (even though that might make it harder to get your paper accepted or your project funded ;)).
+ * The *pattern*: this is the actual change involved in the process and usually has the work *"what"* in it. For example what is changing before and after the extinction event? This is effectively the statistic that will allow you to look at the process and understand the mechanism. Basically it's the statistic, value or... disparity!
+
+
 
 
 ### Testing disparity metrics
