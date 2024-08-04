@@ -168,9 +168,40 @@ You can separate part of your statistical research into three components:
  * The *process*: this is the dynamic change that makes your question interesting and usually has the word *"how"* in it. For example: "how does disparity change before and after the mass extinction?". The *how* here is the *process* by which disparity changes through time. This is not especially a biological question (although it ultimately will be) because you can just ask yourself *how* without asking *why* (even though that might make it harder to get your paper accepted or your project funded ;)).
  * The *pattern*: this is the actual change involved in the process and usually has the work *"what"* in it. For example what is changing before and after the extinction event? This is effectively the statistic that will allow you to look at the process and understand the mechanism. Basically it's the statistic, value or... disparity!
 
-
-
+So once you have your mechanism and process in mind you can choose your metric.
 
 ### Testing disparity metrics
+
+You can use the `dispRity` and `moms` pipeline to test your metric.
+
+[`moms`](https://tguillerme.shinyapps.io/moms/).
+
+
+```{r}
+## Testing the sum of variance
+my_test <- test.metric(my_traitspace, metric = c(sum,variances), shifts = c("size", "random"))
+plot(my_test)
+```
+
+
+
+<div class="warning" style='padding:0.1em; background-color:#65D85F; color:#067800'>
+
+**TINKER TIMES**: Have a go and test multiple metrics and multiple processes to see which one would work better!
+
+<details>
+  <summary>[**Click to expand the solution**]:
+</summary>
+
+```{r, fig.height = 6, fig.width = 12}
+## Does the sum of variance captures changes in size or in position
+my_test1 <- test.metric(my_traitspace, metric = c(sum,variances), shifts = c("size", "position", "random"))
+## What about the sum of ranges?
+my_test2 <- test.metric(my_traitspace, metric = c(sum,ranges), shifts = c("size", "position", "random"))
+```
+
+</details>
+</div>
+
 
 ## References
