@@ -8,10 +8,307 @@ output:
   pdf_document: default
 ---
 
+
+```{r, echo = FALSE}
+library(dispRity)
+```
+
 # From disparity to macroevolution
+
+<div class="warning" style='padding:0.1em; background-color:#FFAF70; color:#954200'>
+
+**CATCHING UP ZONE**: here's some example discrete dataset from @beck2014ancient with ancestral states estimations and 
+
+<details>
+  <summary>[**Click to expand the data loading part**]:
+</summary>
+
+```{r}
+## Get discrete data
+discrete_traits <- read.nexus.data("../examples/discrete_characters/Beck2014.nex")
+## Combine the output list into a matrix (rows are species and columns are characters)
+discrete_data <- do.call(rbind, discrete_traits)
+## Get the tree
+discrete_tree <- read.nexus("../examples/trees/Beck2014.tre")
+
+## Cleaning both the tree and the data to match
+cleaned_data  <- clean.data(data = discrete_data, tree = discrete_tree)
+discrete_data <- cleaned_data$data
+discrete_tree <- cleaned_data$tree
+## The following were dropped:
+cleaned_data$dropped_rows
+cleaned_data$dropped_tips
+
+## Adding node labels
+discrete_tree <- makeNodeLabel(discrete_tree, prefix = "n")
+
+## Estimating ancestral states
+ancestral_states <- multi.ace(discrete_data, discrete_tree, output = "combined")
+
+# Calculating the distance matrix
+distance_matrix <- char.diff(ancestral_states, method = "mord", by.col = FALSE)
+
+## Ordinating the data
+my_pco <- cmdscale(distance_matrix,
+                   # the number of dimensions
+                   k = ncol(distance_matrix)-2,
+                   # the Cailliez correction
+                   add = TRUE)
+
+## Getting just the coordinates
+my_traitspace <- my_pco$points
+```
+</details>
+</div>
+
+Once we have our question at hand (and an idea of how to measure disparity) we can finally start doing some cool stuff and use disparity to tell macroevolutionary (or ecological!) stories.
 
 ## Testing hypothesis with disparity data
 
+One first aspect for these type of analyses, is to split the data in a meaningful way that will illustrate the process in question.
+We can split it through time (we'll cover that very soon) or by groups using the `dispRity::custom.subsets` function.
+
+### Making subsets
+
+This function is relatively easy to use, you can just provide your traitspace and a specific way to group you data.
+For example that could be two different clades or some lists of species with specific characteristics (e.g. diet).
+
+<div class="warning" style='padding:0.1em; background-color:#5D7BBB; color:#092663'>
+
+**USE YOUR DATA**: set up your groups based on your own data.
+
+Either load a data frame (.csv) with different categories, for example:
+
+```
+  , diet, group
+species_a, omnivore, group A
+species_b, omnivore, group B
+species_c, carnivore, group A
+```
+
+```{r, eval = FALSE}
+## Read your favourite csv file (you'll need to set up the path yourself!)
+my_data_groups <- read.csv("path_to_my_super_serious_dataset.csv")
+```
+
+or else you can just create your list manually
+
+```{r, eval = FALSE}
+## Making a list of different groups
+my_data_groups <- list("omnivores"  = c("species_a", "species_b", ...),
+                       "carnivores" = c("species_c", ...))
+```
+</div>
+
+Here we will just group the species from the example dataset into crown and stem mammals using the `dispRity::crown.stem` function:
+
+<div class="warning" style='padding:0.1em; background-color:#FFAF70; color:#954200'>
+
+**CATCHING UP ZONE**: Creating two groups from the @beck2014ancient dataset: the crown and the stem mammals
+
+```{r}
+## Crown and stem mammals
+my_data_groups <- crown.stem(tree = discrete_tree, inc.nodes = TRUE)
+```
+</div>
+
+And here's how we can create the groups into a `"dispRity"` object:
+
+```{r}
+## Grouping the data into different subsets
+my_groups <- custom.subsets(my_traitspace, group = my_data_groups)
+```
+
+Note from here on we will be heavily relying on `"dispRity"` objects.
+They are a specific `R` class of objects (S3 - for those that know what that is [more nerding here](https://raw.githack.com/TGuillerme/dispRity/master/inst/vignettes/Developer_resources.html)) that are attached to the `dispRity` package.
+It allows for easier visualisation (plotting, printing, summarising) and neater easier to reproduce analysis: each step is configured by you and is sharable and savable.
+
+```{r}
+## What is the class of my_groups?
+class(my_groups)
+## What's in it?
+my_groups
+## What does it look like in 2D
+plot(my_groups)
+```
+
+Once we have this groups sorted, we can easily measure disparity:
+
+```{r}
+## The sum of variance of our groups
+my_disparity <- dispRity(my_groups, metric = c(sum, variances))
+my_disparity
+## What's the difference in variance?
+summary(my_disparity)
+```
+
+We can compare the values of disparity we have between our two groups and tell a story about it.
+For example, with the example dataset we have a slight increase in variance in the crown mammals compared to the stem ones indicating maybe a increase in trait space occupancy through the phylogeny?
+But that's very anecdotal and needs more convincing.
+We probably want to do some statistical test!
+
+> A personal note on statistical testing for statophobes: we are now entering the zone when there's going to be p-values and other statistical bits that can be a bit scary.
+But fear not: although statistics (and researchers) often present this as an objective measure of the truth that has to be rigorous and final, I see it much more as a methodical way to convince our colleagues that our hypothesis is justifiable.
+I think that statistics are not the truth but a very rigorous and shareable way to explain what is happening in the natural world.
+A great paper to this effect is @dushoff2019can that neatly suggests changing the word "significant" (i.e. a magical black box word that makes your research correct or not) into the more commonly english word "clearly" (i.e. a normal word that does call any magic: "disparity in group A is clearly/not clearly different than in group B").
+Hopefully this approach will make you more relaxed about the following session and just see it as a _rigorously subjective_ way to convince your comrades rather than some _objective_ dark magic!
+Note that note all my comrades (e.g. @muff2022rewriting) share this view of statistics though ;).
+
+### Bootstrapping and rarefying
+
+One way to check whether these two samples are truly different and not only different by chance is to bootstrap the data.
+Bootstrapping is an easy way to look at the quality of your data (@efron1994introduction [^3]).
+Basically it consists of randomly resampling your data (with replacement) a certain number of times.
+Effectively this means randomly increasing the weight of some of your data points (the ones resampled) and reducing the weight of some other (the ones not resampled).
+[^3] If you're ever struggling with stats and R, they made an excellent YouTube playlist of [68 short stats courses](https://www.youtube.com/@datascienceanalytics1826/playlists). Do one per day after lunch and you'll be a stats expert in 3.5 months!
+
+```{r}
+## Bootstrapping the data
+my_disparity <- dispRity(boot.matrix(my_groups),
+                         metric = c(sum, variances))
+my_disparity
+## What the difference in variance after bootstrapping?
+summary(my_disparity)
+```
+
+With the example dataset we see again a very small difference but with small-ish overlap in the confidence intervals:
+
+```{r}
+## Visualising the difference in distribution
+plot(my_disparity)
+```
+
+This difference though might be due to the difference in number of species (more species in the crown group means more disparity?).
+You can check that by *rarefying* your data.
+This is a variant of the bootstrapping procedure but instead of resampling the same number of elements, you can set a specific number of elements to resample (or several numbers):
+
+```{r}
+## Get the size of the smallest group@
+n_small <- min(size.subsets(my_groups))
+
+## Bootstrapping the data
+my_disparity <- dispRity(boot.matrix(my_groups, rarefaction = n_small),
+                         metric = c(sum, variances))
+my_disparity
+## What the difference in variance after bootstrapping?
+summary(my_disparity)
+## Visualising the difference in distribution
+plot(my_disparity)
+```
+
+Here we can see it doesn't make a big difference.
+
+<div class="warning" style='padding:0.1em; background-color:#65D85F; color:#067800'>
+
+**TINKER TIMES**: here we just looked at the `"full"` bootstrapping algorithm (that resamples every elements or every number of elements with the `rarefaction` option).
+You can also change it to the more conservative `"single"` bootstrapping that resamples only one element every time; or the `"null"` algorithm that resamples _ALL_ the elements in the traitspace (i.e. not only the elements in the group).
+
+Think about what the difference each algorithm could make to your data and test it!
+
+<details>
+  <summary>[**Click to expand the solution**]:
+</summary>
+
+```{r, fig.height = 6, fig.width = 18}
+## Bootstrapping the data 3 ways
+full_boot   <- dispRity(boot.matrix(my_groups, boot.type = "full"),
+                        metric = c(sum, variances))
+single_boot <- dispRity(boot.matrix(my_groups, boot.type = "single"),
+                        metric = c(sum, variances))
+null_boot   <- dispRity(boot.matrix(my_groups, boot.type = "null"),
+                        metric = c(sum, variances))
+
+## Plotting the differences
+op <- par(mfrow = c(1,3))
+plot(full_boot, main = "full bootstrap")
+plot(single_boot, main = "single bootstrap")
+plot(null_boot, main = "null bootstrap")
+par(op)
+```
+
+</details>
+</div>
+
+### Testing hypotheses 1
+
+Once we have a distribution of disparity values (here from our bootstrap), we can actually calculate the probability of our groups sharing the same distribution or not (i.e. calculating a _p_-value).
+Because our distributions are not independent data (i.e. the values come from bootstraps, not observations), we can use a non-parametric t-test that doesn't assume independence in the data: the Wilcoxon rank test (`wilcox.test`).
+We can do that directly by extracting the bootstrapped disparity values (using get disparity):
+
+```{r}
+## Extracting the disparity values
+bootstrapped_values <- get.disparity(my_disparity, observed = FALSE)
+## Testing the differences
+wilcox.test(bootstrapped_values$crown[[1]], bootstrapped_values$stem[[1]])
+```
+
+Or, more nicely, by using the `test.dispRity` function:
+
+```{r}
+## Running the test automatically on the dispRity object
+test.dispRity(my_disparity, test = wilcox.test)
+```
+
+> Note that you can also use disparity statistics that are distributions rather than point estimates. E.g. all the `variances` distribution instead of the `c(sum, variances)` point estimate. More info and examples [here](https://raw.githack.com/TGuillerme/dispRity/master/inst/gitbook/_book/details-of-specific-functions.html#disparity-distribution).
+
+If you had multiple groups, you can try doing pairs of tests using `comparisons` (but think about correcting for p-value inflation using the `correction` option), or, more neatly by using an `aov`.
+
+> Note also that if you're just interested in comparing the matrices for each subset (not their disparity), you can use the `adonis.dispRity` which is a PERMANOVA wrapper function for `vegan::adonis2`.
+
+### Testing hypotheses 3
+
+
+@diaz2016global
+
+Diaz style null testing
+
 ## Measuring disparity through time
 
+### Time binning
+
+```{r}
+# chrono.subsets()
+```
+
+### Time slicing!
+
+```{r}
+# chrono.subsets()
+```
+
+### `dtt`: disparity through time
+
+```{r}
+# dtt.dispRity()
+```
+
+## Measuring disparity with trees
+
+pgls. But much more about that tomorrow.
+
 ## Telling disparity stories
+
+Mezosoic archosaurs disparity
+https://royalsocietypublishing.org/doi/full/10.1098/rsos.231495
+
+disparity through time in crocodiles
+https://onlinelibrary.wiley.com/doi/full/10.1111/jeb.13540
+
+relation between changes in disparity and temperature in turtles
+https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.10201
+
+convergence between mosasaurs and early cetacean skulls
+https://www.cambridge.org/core/journals/paleobiology/article/convergence-and-constraint-in-the-cranial-evolution-of-mosasaurid-reptiles-and-early-cetaceans/19DC42DECB1C9166732122F1857EAC5F
+
+morphospace changes in brachiopods
+https://www.nature.com/articles/s41559-024-02491-9
+
+diversification of sabertooth tigers
+https://www.cell.com/current-biology/fulltext/S0960-9822(24)00529-3#%20
+
+niche partitioning in marine reptiles
+https://royalsocietypublishing.org/doi/full/10.1098/rsos.231951
+
+
+
+## References
