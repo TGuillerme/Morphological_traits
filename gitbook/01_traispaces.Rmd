@@ -22,7 +22,33 @@ This step allows us to go from observed/collected data into a multidimensional t
 
 ![Types of morphological data - From @guillerme2020disparities](../images/figure_data.png)
 
-## Reading data into `R`
+## Morphological traits
+
+### Morphological traits in the age of molecular data?
+
+In a recent paper I reviewed (hopefully to be published soon - it's going to be a super useful piece of work for the community!), the authors made a distinction between molecular characters being objective and morphological ones being subjective.
+The common idea is that you put some DNA in a machine and get some sequence of letters out of it (ACTG) which appears to be more objective than going into a museum and comparing specimens with your expert eyes.
+And here's my rant on why I disagree:
+
+TL;DR:
+I think the comparison "molecular = objective" and "morphological = subjective" is a false comparison.
+This might be because of a dual meaning of these two words:
+
+ * Subjectivity and objectivity as a epistemoligical concept where something is subjective when it's link to a person's experience and something is objective when it's not. But both morphological and molecular characters are mostly objective in their description (i.e. the character is not linked to a person's experience) but mostly subjective in their use (i.e. the character's usage is linked to a person's experience)/ 
+ * But also in research we tend to associate these words to a moral judgment when referring to our work: objective = good and subjective = bad. Which again is both true and false for any character: we should use the method best adapted to a certain type of character (to our knowledge) so the character is always, in that sense _objectively_ good (in a subjective sense; i.e. to the best of our knowledge).
+
+Regarding the first meaning (epistemological):
+Although molecular characters are objective (there is a nucleotide "A" in position _n_ on gene Y regardless of a person's experience), morphological characters can be equally objective (there are 4 cusps on this teeth; or in continuous terms: this bone is longer than another one).
+Furthermore, often authors are not only interested in the characters (molecular and morphological) but how they are used for a research purpose (e.g. building a tree).
+This comes with many arbitrary decisions in both cases (i.e. subjective choice - not bad choices, _cf_ the second meaning of the words below).
+For example, workers building phylogenies based on molecular characters have to make a lot of arbitrary decisions on which genes to use based on time, cost and availability constraints.
+Maybe the comparison should be more along the lines of "molecular = easier to automatise" and "morphological = harder to automatise" (although both are probably not true when diving into it: this was true 20 years ago, less so nowadays).
+
+Regarding the second meaning (moral judgment; objective = good, subjective = bad):
+Although continuous measurements appear to be more objective (_sensu_ 1st meaning: "bone A is of length X") and this _better_ for the aim of the worker (_sensu_ 2nd meaning; "it's better to use continuous characters to build a morphological tree" - see this one by the way: @parins2018use).
+It might not be the case when choosing another method (subjective; _sensu_ 1st meaning) where discrete morphological characters are more subjective (_sensu_ 1st meaning; an expert chose to spend time encoding character X rather than character Y) but it leads to _better_ results depending on the method (_sensu_ 2nd meaning; when using parsimony, trees are better when expert chose the characters - i.e. the trees end up being more useful to the community).
+This applies also to molecular characters when workers tend to use the GTR model with 4 categories of rates approximating a Gamma distribution (rarely another number).
+This can be equally seen as a subjective choice (1st meaning) leading to an objective improvement (2nd meaning). 
 
 ### Continuous trait data
 
@@ -135,7 +161,8 @@ Principal coordinates analysis (PCO, PCoA), Multidimensional scaling (MDS), Non-
 
 ### Principal components analyses (PCA)
 
-<!-- SLIDES: ordinations -->
+[SLIDES: PCA](../)
+<!-- gitraw link slides/01.1_PCA.pdf-->
 
 <div class="warning" style='padding:0.1em; background-color:#FFAF70; color:#954200'>
 
@@ -203,7 +230,8 @@ PCOs are also pretty easy but unlike PCAs they require one extra step before ord
 
 #### Distance matrices
 
-<!-- SLIDES: distances -->
+[SLIDES: PC0](../)
+<!-- gitraw link slides/01.2_PC0.pdf-->
 
 There are many ways to calculate distance matrices from discrete morphological characters.
 See this very good review for more information: @lloyd2016estimating.
