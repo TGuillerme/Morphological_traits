@@ -11,6 +11,7 @@ output:
 
 ```{r, echo = FALSE}
 library(dispRity)
+library(geiger)
 ```
 
 # From disparity to macroevolution
@@ -41,6 +42,8 @@ cleaned_data$dropped_tips
 
 ## Adding node labels
 discrete_tree <- makeNodeLabel(discrete_tree, prefix = "n")
+## Adding the root time
+discrete_tree$root.time <- max(tree.age(discrete_tree)$age)
 
 ## Estimating ancestral states
 ancestral_states <- multi.ace(discrete_data, discrete_tree, output = "combined")
@@ -70,7 +73,7 @@ We can split it through time (we'll cover that very soon) or by groups using the
 
 ### Making subsets
 
-This function is relatively easy to use, you can just provide your traitspace and a specific way to group you data.
+This function is relatively easy to use, you can just provide your trait space and a specific way to group you data.
 For example that could be two different clades or some lists of species with specific characteristics (e.g. diet).
 
 <div class="warning" style='padding:0.1em; background-color:#5D7BBB; color:#092663'>
@@ -201,7 +204,7 @@ Here we can see it doesn't make a big difference.
 <div class="warning" style='padding:0.1em; background-color:#65D85F; color:#067800'>
 
 **TINKER TIMES**: here we just looked at the `"full"` bootstrapping algorithm (that resamples every elements or every number of elements with the `rarefaction` option).
-You can also change it to the more conservative `"single"` bootstrapping that resamples only one element every time; or the `"null"` algorithm that resamples _ALL_ the elements in the traitspace (i.e. not only the elements in the group).
+You can also change it to the more conservative `"single"` bootstrapping that resamples only one element every time; or the `"null"` algorithm that resamples _ALL_ the elements in the trait space (i.e. not only the elements in the group).
 
 Think about what the difference each algorithm could make to your data and test it!
 
@@ -255,38 +258,298 @@ If you had multiple groups, you can try doing pairs of tests using `comparisons`
 
 > Note also that if you're just interested in comparing the matrices for each subset (not their disparity), you can use the `adonis.dispRity` which is a PERMANOVA wrapper function for `vegan::adonis2`.
 
-### Testing hypotheses 3
 
+<!-- ### Testing hypotheses 3
+
+#TODO!
 
 @diaz2016global
 
 Diaz style null testing
+ -->
+
 
 ## Measuring disparity through time
 
-### Time binning
+One other obvious way to look at changes in disparity is to look at disparity through time.
+There are two main ways to look at it - which weirdly are both called "disparity through time":
+
+ * Measuring disparity at different points in time. We are going to cover that first and call it simply **disparity through time**.
+ * Measuring disparity through time and comparing it to models of change in disparity. We are going to cover that later and call it **`dtt`**.
+
+And we'll chat about the differences between both methods of course!
+
+<div class="warning" style='padding:0.1em; background-color:#5D7BBB; color:#092663'>
+
+**USE YOUR DATA**: get the first and last occurrence data (FAD/LAD) for your own data (as a .csv file)
+
+```
+  ,FAD ,LAD
+species_a, 37.20, 36.80
+species_b, 83.60, 72.10
+```
+
+```{r, eval = FALSE}
+## Read your favourite csv file (you'll need to set up the path yourself!)
+my_FADLAD <- read.csv("path_to_my_super_serious_dataset.csv")
+```
+</div>
+
+<div class="warning" style='padding:0.1em; background-color:#FFAF70; color:#954200'>
+
+**CATCHING UP ZONE**: Using the occurrence dataset from @beck2014ancient
 
 ```{r}
-# chrono.subsets()
+## Crown and stem mammals
+my_FADLAD <- read.csv("../examples/FADLAD/Beck2014.csv", row.names = 1)
 ```
+</div>
+
+### Time binning
+
+One first and relatively obvious way is to calculate disparity between groups but where groups are different time bins.
+This is easily done in `dispRity` with the `chrono.subsets` function using the `method = "discrete"`.
+Here for example, we can create 5 equally sized time bins across the temporal distribution of our data:
+
+```{r}
+## Creating discrete bin subsets
+time_subsets <- chrono.subsets(my_traitspace, method = "discrete",
+                               tree = discrete_tree, FADLAD = my_FADLAD,
+                               time = 5)
+```
+> Note that if you have occurrence data for all your species you don't need a `tree` argument.
+
+We can then calculate and visualise disparity
+
+```{r}
+## Calculating disparity per bin
+time_disparity <- dispRity(time_subsets, metric = c(sum, variances))
+summary(time_disparity)
+plot(time_disparity)
+```
+
+Tada! That was super easy!
+
+<div class="warning" style='padding:0.1em; background-color:#65D85F; color:#067800'>
+
+**TINKER TIMES**: you can also make it a little bit more interesting or at least a bit more related to geology by specifying time bins that correspond to geological layers.
+You can do that by specifying a vector for time in the format of `time = c(145, 66, 23)` for the boundaries of the Cretaceous (from 145 million years - mya - to 66 mya) and the Palaeogene (66 to 23 mya). See if you can do that for your dataset.
+
+<details>
+  <summary>[**Click to expand the solution**]:
+</summary>
+
+```{r, fig.height = 6, fig.width = 18}
+## Option 1: enter the boundaries ages manually
+## booooooring! - and prone to errors
+
+## Option 2: use the palaeoverse package!
+## Getting the geological time from the palaeoverse package
+period_bins <- palaeoverse::time_bins(rank = "period")
+## Get the boundaries from Jurassic to present
+period_bins_bounds <- c(period_bins[c(8:12), "max_ma"], 0)
+
+## Creating the subsets
+time_subsets_geo <- chrono.subsets(my_traitspace, method = "discrete",
+                                  tree = discrete_tree, FADLAD = my_FADLAD,
+                                  time = period_bins_bounds)
+
+## Calculating disparity per bin
+time_disparity2 <- dispRity(time_subsets_geo, metric = c(sum, variances))
+summary(time_disparity2)
+plot(time_disparity2)
+```
+
+</details>
+</div>
+
+This is all well and good but there can be some problems with the time binning method covered just above.
+We discuss most of the potential problems here: @guillerme2018time.
+Two of the main ones are that:
+
+ 1. It assumes punctuated equilibrium disparity evolution (i.e. disparity is uniform within bins and changes only - and drastically - at bins boundary)
+ 2. It can artificially increase the effect of extinction events by forcing changes at a bin boundary.
 
 ### Time slicing!
 
+[SLIDES: Time slicing](../)
+<!-- gitraw link slides/03.1_time_slicing.pdf-->
+
+Let's try to do a simple ACCTRAN model (accelerated transition) on ten time slices:
+
 ```{r}
-# chrono.subsets()
+## Creating continuous time slices subsets
+time_subsets <- chrono.subsets(my_traitspace, method = "continuous",
+                               tree = discrete_tree, FADLAD = my_FADLAD,
+                               time = 10, model = "acctran")
+## Calculating disparity per bin
+time_disparity <- dispRity(time_subsets, metric = c(sum, variances))
+summary(time_disparity)
+plot(time_disparity)
 ```
+
+Note that so far the model we use is not probabilistic, that means that every time you run it you'll have the same solution.
+However, some of the models (called the `*.split` models) are probabilistic in nature and would require you bootstrapping the data to show the range of estimated solutions:
+ 
+```{r}
+## Creating continuous time slices subsets using a split model
+gradual_split <- chrono.subsets(my_traitspace, method = "continuous",
+                               tree = discrete_tree, FADLAD = my_FADLAD,
+                               time = 10, model = "gradual.split")
+## Calculating disparity per bin
+time_disparity <- dispRity(boot.matrix(time_subsets), metric = c(sum, variances))
+summary(time_disparity)
+plot(time_disparity)
+```
+
+<div class="warning" style='padding:0.1em; background-color:#65D85F; color:#067800'>
+
+**TINKER TIMES**: have a look at comparing the different models of time-slicing and see how it changes your disparity curves (if it changes them at all!).
+
+<details>
+  <summary>[**Click to expand the solution**]:
+</summary>
+
+```{r, fig.height = 12, fig.width = 12}
+## Testing different models
+gradual_split <- chrono.subsets(my_traitspace, method = "continuous",
+                               tree = discrete_tree, FADLAD = my_FADLAD,
+                               time = 10, model = "gradual.split")
+equal_split   <- chrono.subsets(my_traitspace, method = "continuous",
+                               tree = discrete_tree, FADLAD = my_FADLAD,
+                               time = 10, model = "equal.split")
+acctran       <- chrono.subsets(my_traitspace, method = "continuous",
+                               tree = discrete_tree, FADLAD = my_FADLAD,
+                               time = 10, model = "acctran")
+deltran       <- chrono.subsets(my_traitspace, method = "continuous",
+                               tree = discrete_tree, FADLAD = my_FADLAD,
+                               time = 10, model = "deltran")
+## Calculating disparity per bin
+gradual_split_disp <- dispRity(boot.matrix(gradual_split), metric = c(sum, variances))
+equal_split_disp   <- dispRity(boot.matrix(equal_split), metric = c(sum, variances))
+acctran_disp       <- dispRity(boot.matrix(acctran), metric = c(sum, variances))
+deltran_disp       <- dispRity(boot.matrix(deltran), metric = c(sum, variances))
+
+op <- par(mfrow = c(2,2))
+plot(gradual_split_disp, main = "gradual split")
+plot(equal_split_disp, main = "equal split")
+plot(acctran_disp, main = "acctran")
+plot(deltran_disp, main = "deltran")
+par(op)
+```
+
+</details>
+</div>
+
 
 ### `dtt`: disparity through time
 
-```{r}
-# dtt.dispRity()
+`dtt` analyses are disparity through time analyses where the disparity is calculated for each clade in a given tree and then compared to a simulated disparity curve (usually a Brownian motion one) using the same tree.
+This results in a comparison between an observed clade disparity curve scaled by the number of species and a simulated trait.
+Note that this is quiet different than disparity through time how we measured it previously.
+
+Here is a comparison with the three methods with:
+
+ * DTT being the disparity-through-time as described in @harmon2003tempo and calculated in @geiger;
+ * the raw disparity per clade calculated using `dispRity` (and plotted through time).
+ * the disparity through time using `dispRity` (time-slicing using the proximity model).
+
+> Note that I'm not going to go in the details here but you can see and follow the code in the raw markdown file if you want.
+
+```{r, echo = FALSE}
+## Comparison between dtt and disparity through time
+
+## The data
+geo  <- get(data(geospiza))
+tree <- geo$phy
+data <- geo$dat
+cleaned <- clean.data(data, tree)
+tree <- cleaned$tree
+data <- cleaned$data
+tree <- makeNodeLabel(tree, prefix = "n")
+tree$root.time <- max(tree.age(tree)$age)
+
+## dtt
+dtt_disparity <- geiger::dtt(phy = tree, data = data, nsim = 20, plot = TRUE, index = "avg.sq")
+
+## Disparity through time
+
+## running ancestral state estimations
+ace_data <- multi.ace(data, tree)
+full_data <- rbind(data, ace_data)
+
+## Get the time slices
+time_slices <- ((1-dtt_disparity$times) * tree$root.time)[-1]
+time_subsets <- chrono.subsets(full_data, tree = tree, method = "continuous", model = "proximity", time = time_slices)
+
+## Get the disparity through time
+average.sq <- function(X) mean(pairwise.dist(X)^2)
+disparity_through_time <- dispRity(time_subsets, metric = average.sq)
+
+## Scale everything for plotting
+disp_time_scale <- unlist(get.disparity(disparity_through_time))
+disp_time_scale <- disp_time_scale[-1]/max(disp_time_scale[-1])
+lines(x = dtt_disparity$times[-c(1:2)], y = disp_time_scale, col = "orange", lwd = 2)
+
+## Disparity per clade
+
+## Create the subsets for each clade and calculate disparity
+clade_groups <- custom.subsets(data, group = tree)
+clade_disparity <- dispRity(clade_groups, metric = average.sq)
+disp_clade <- unlist(get.disparity(clade_disparity))
+disp_clade <- disp_clade/max(disp_clade) 
+lines(x = dtt_disparity$times[-c(1)], y = disp_clade, col = "blue", lwd = 2)
+
+## Adding the legend
+legend("topleft", lwd = 2, col = c("black", "blue", "orange"),
+       legend = c("DTT (geiger::dtt)", "disparity per clade (dispRity)", "disparity through time (dispRity)"))
 ```
+
+You can see there is some difference between all the curves here!
+The ones between the DTT and the clade disparity (black and blue) can be probably explained by algorithmic choices between both approaches (the scaling procedure is a bit more complex in `geiger:dtt` and the clade disparity values are time slice averages - from what I understood).
+But in general both curves are similar.
+
+This is not the case though with the disparity through time analyses `dispRity` style where disparity is measured as snapshots of disparity in the trait space at any specific time point (here the nodes ages, corresponding to the clade ages).
+So keep these two differences in mind and sorry about the confusing name similarities!
+
+So which method is better?
+I have some opinion here but I'm biased and I like to remind you to choose the method best adapted to your question, not especially because of somebody's opinion (e.g. mine).
+
+That said, one of the major drawbacks I see with the `dtt` method is that, unfortunately, the implementation is not really modular.
+It currently doesn't allow trees with fossil data and it only works with three inbuilt disparity metrics.
+
+In general though, both methods (`dtt` and disparity through time) both have the problem on ways to test null expectations that are easily to calculate but also make sense biologically.
+For example, in `dtt`, comparing the observed disparity to a simple Brownian Motion can often be a bit naive and unsurprising (i.e. it's often easily expected that some trait have a complex evolutionary history and are not just following a BM).
+
+Stay tuned for some potential solution with the @treats package allowing to simulate more complex data and evolutionary histories to compare observed and simulated disparity.
+I'm still working on it but if you feel explorative, please contact me or check out this loooooong tutorial [video](https://www.youtube.com/watch?v=QUhaFZxER2I) and [vignette](https://cdn.githubraw.com/TGuillerme/treats/master/inst/vignettes/treats_workshop.html).
 
 ## Measuring disparity with trees
 
-pgls. But much more about that tomorrow.
+Finally, note that here we haven't looked much at phylogenetic hypotheses and phylogenetic comparative methods.
+This is mainly because I didn't want to add to much stuff and that we'll have a great session dedicated to it tomorrow!
+
+But here's a brief example on how to look at disparity using standard phylogenetic generalised least square (pgls) method.
+Note that this type of analysis is only relevant if you calculated disparity using a dimension level 2 metric that is linked to the rows (for example the distance of each element to the centroid using `centroids`) and if you have only data for your tips:
+
+```{r}
+## Simple example
+data(BeckLee_mat50)
+data(BeckLee_tree)
+disparity <- dispRity(BeckLee_mat50, metric = centroids, tree = BeckLee_tree)
+
+## Running a simple PGLS
+model <- pgls.dispRity(disparity)
+summary(model)
+```
+
+We will be covering that in much more details tomorrow!
 
 ## Telling disparity stories
+
+We've looked at many methods but now it's time to work on telling a story!
+
+
 
 Mezosoic archosaurs disparity
 https://royalsocietypublishing.org/doi/full/10.1098/rsos.231495
@@ -309,6 +572,97 @@ https://www.cell.com/current-biology/fulltext/S0960-9822(24)00529-3#%20
 niche partitioning in marine reptiles
 https://royalsocietypublishing.org/doi/full/10.1098/rsos.231951
 
+
+
+
+<div class="warning" style='padding:0.1em; background-color:#65D85F; color:#067800'>
+
+**TINKER TIMES**: Do your very own disparity analysis!
+
+Think about what the difference each algorithm could make to your data and test it!
+
+<details>
+  <summary>[**Click to expand the solution**]:
+</summary>
+
+Question: is there an effect of the the K-Pg extinction on mammalian disparity?
+
+Here we will be looking at how the 
+
+
+
+**1- From data to trait spaces**
+
+Here we will again use the data from @beck2014ancient to test our hypothesis.
+We will transform the data by doing:
+
+ * Ancestral states estimations on discrete characters
+ * Calculating a distance matrix using the MORD distance (@lloyd2016estimating)
+ * Ordinating the distance matrix using a PCO with the Cailliez correction (@cailliez1983analytical)
+
+```{r}
+## Get discrete data
+discrete_traits <- read.nexus.data("../examples/discrete_characters/Beck2014.nex")
+## Combine the output list into a matrix (rows are species and columns are characters)
+discrete_data <- do.call(rbind, discrete_traits)
+## Get the tree
+discrete_tree <- read.nexus("../examples/trees/Beck2014.tre")
+
+## Cleaning both the tree and the data to match
+cleaned_data  <- clean.data(data = discrete_data, tree = discrete_tree)
+discrete_data <- cleaned_data$data
+discrete_tree <- cleaned_data$tree
+
+## Adding node labels
+discrete_tree <- makeNodeLabel(discrete_tree, prefix = "n")
+## Adding the root time
+discrete_tree$root.time <- max(tree.age(discrete_tree)$age)
+
+## Estimating ancestral states
+ancestral_states <- multi.ace(discrete_data, discrete_tree, output = "combined")
+
+# Calculating the distance matrix
+distance_matrix <- char.diff(ancestral_states, method = "mord", by.col = FALSE)
+
+## Ordinating the data
+my_pco <- cmdscale(distance_matrix,
+                   # the number of dimensions
+                   k = ncol(distance_matrix)-2,
+                   # the Cailliez correction
+                   add = TRUE)
+
+## Getting just the coordinates
+my_traitspace <- my_pco$points
+```
+
+**2- From traitspace to disparity**
+
+From this traitspace we will choose two different disparity metric reflecting changes in the size of the traitspace and changes in the position of the traitspace using the @moms pipeline.
+
+The two metrics we will use are:
+
+ * The median distance from the centroid of the trait space as a proxy for the trait space size
+ * The median nearest neighbours distance metric as a proxy for the trait space density
+
+```{r, fig.height = 12, fig.width = 6}
+## Testing the median distance to centroid as a proxy of traitspace size
+my_test <- test.metric(my_traitspace, metric = c(median, centroids), shifts = c("size", "random"))
+plot(my_test)
+```
+
+```{r, fig.height = 12, fig.width = 6}
+## Testing the median nearest neighbour distance as a proxy of traitspace density
+my_test <- test.metric(my_traitspace, metric = c(median, neighbours), shifts = c("density", "random"))
+plot(my_test)
+```
+
+**3 - From disparity to macroevolution**
+
+With the trait space and the chosen disparity metrics we can now test whether there is a change it trait space size or density before and after the K-Pg extinction
+
+
+</details>
+</div>
 
 
 ## References
