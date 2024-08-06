@@ -549,30 +549,37 @@ We will be covering that in much more details tomorrow!
 
 We've looked at many methods but now it's time to work on telling a story!
 
+<!-- Mammals around the K-Pg extinction (106 - 421):
+@beck2014ancient
+https://royalsocietypublishing.org/doi/full/10.1098/rspb.2014.1278
 
+Echinoderms during the Ordovician and Devonian (42 taxa - 87 char) 
+@wright2017bayesian
+https://www.cambridge.org/core/journals/journal-of-paleontology/article/bayesian-estimation-of-fossil-phylogenies-and-the-evolution-of-early-to-middle-paleozoic-crinoids-echinodermata/E37972902541CD0995AAD08A1122BD54
 
-Mezosoic archosaurs disparity
-https://royalsocietypublishing.org/doi/full/10.1098/rsos.231495
+Dinosaurs
+@bapst2016topology
+https://royalsocietypublishing.org/doi/full/10.1098/rsbl.2016.0237
+TAX=89 NCHAR=374
 
-disparity through time in crocodiles
-https://onlinelibrary.wiley.com/doi/full/10.1111/jeb.13540
+Dinosaurs - bird transition
+@brusatte2014gradual
+https://www.sciencedirect.com/science/article/pii/S0960982214010471
+NTAX=152 NCHAR=853 -->
 
-relation between changes in disparity and temperature in turtles
-https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.10201
+Here are some great examples:
 
-convergence between mosasaurs and early cetacean skulls
-https://www.cambridge.org/core/journals/paleobiology/article/convergence-and-constraint-in-the-cranial-evolution-of-mosasaurid-reptiles-and-early-cetaceans/19DC42DECB1C9166732122F1857EAC5F
-
-morphospace changes in brachiopods
-https://www.nature.com/articles/s41559-024-02491-9
-
-diversification of sabertooth tigers
-https://www.cell.com/current-biology/fulltext/S0960-9822(24)00529-3#%20
-
-niche partitioning in marine reptiles
-https://royalsocietypublishing.org/doi/full/10.1098/rsos.231951
-
-
+ * [disparity through time in crocodiles](https://onlinelibrary.wiley.com/doi/full/10.1111/jeb.13540) by @godoy2020crocodylomorph
+<!-- INC DATA! -->
+ * [relation between changes in disparity and temperature in turtles](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.10201) by @farina2023turtle
+<!-- INC DATA! -->
+ * [morphospace changes in brachiopods](https://www.nature.com/articles/s41559-024-02491-9) by @guo2024morphological
+<!-- INC DATA -->
+ * [diversification of sabertooth tigers](https://www.cell.com/current-biology/fulltext/S0960-9822(24)00529-3#%20) by @chatar2024evolutionary
+<!-- INC DATA -->
+ * [Mezosoic archosaurs disparity](https://royalsocietypublishing.org/doi/full/10.1098/rsos.231495) by @shipley2024locomotion
+ * [convergence between mosasaurs and early cetacean skulls](https://www.cambridge.org/core/journals/paleobiology/article/convergence-and-constraint-in-the-cranial-evolution-of-mosasaurid-reptiles-and-early-cetaceans/19DC42DECB1C9166732122F1857EAC5F) by @bennion2023convergence
+ * [niche partitioning in marine reptiles](https://royalsocietypublishing.org/doi/full/10.1098/rsos.231951) by @foffa2024comparative
 
 
 <div class="warning" style='padding:0.1em; background-color:#65D85F; color:#067800'>
@@ -637,29 +644,48 @@ my_traitspace <- my_pco$points
 
 **2- From traitspace to disparity**
 
-From this traitspace we will choose two different disparity metric reflecting changes in the size of the traitspace and changes in the position of the traitspace using the @moms pipeline.
-
-The two metrics we will use are:
-
- * The median distance from the centroid of the trait space as a proxy for the trait space size
- * The median nearest neighbours distance metric as a proxy for the trait space density
+From this traitspace we will choose one metric looking at the change in disparity trait space size using the sum of each dimension's variance.
 
 ```{r, fig.height = 12, fig.width = 6}
-## Testing the median distance to centroid as a proxy of traitspace size
-my_test <- test.metric(my_traitspace, metric = c(median, centroids), shifts = c("size", "random"))
-plot(my_test)
-```
-
-```{r, fig.height = 12, fig.width = 6}
-## Testing the median nearest neighbour distance as a proxy of traitspace density
-my_test <- test.metric(my_traitspace, metric = c(median, neighbours), shifts = c("density", "random"))
+## Testing the sum of variances as a proxy of traitspace size
+my_test <- test.metric(my_traitspace, metric = c(sum, variances), shifts = c("size", "random"))
 plot(my_test)
 ```
 
 **3 - From disparity to macroevolution**
 
-With the trait space and the chosen disparity metrics we can now test whether there is a change it trait space size or density before and after the K-Pg extinction
+With the trait space and the chosen disparity metrics we can now test whether there is a change it trait space size or density before and after the K-Pg extinction?
 
+```{r, fig.height = 6, fig.width = 6}
+## Creating the time subsets
+time_subsets <- chrono.subsets(my_traitspace, tree = discrete_tree,
+                               method = "continuous", model = "proximity",
+                               time = rev(seq(from = 5, to = 125, by = 10)))
+## Visualising the traitspace
+plot(time_subsets)
+```
+
+```{r, fig.height = 6, fig.width = 12}
+## Measuring disparity through time
+disparity_size <- dispRity(boot.matrix(time_subsets), metric = c(median, centroids))
+plot(disparity_size, main = "Change in trait space size")
+abline(v = 7.2, col = "red")
+```
+
+Testing the change in disparity in terms of of size after the K-Pg extinction with a lag of up to 30 million years:
+
+```{r}
+## Selecting the two subsets after the mass extinction
+extinction_effect <- list(c("65", "55"), c("65", "45"))
+
+## Testing the differences in disparity
+results <- test.dispRity(disparity_size, comparisons = extinction_effect,
+                         test = wilcox.test, correction = "bonferroni")
+results
+```
+
+Here we see now clear difference between before the K-Pg extinction (65 mya) and right after (55 mya) but some clear affect 20 million years later (45 mya).
+This suggest more an effect of the PETM 55 mya than the K-Pg on this dataset!
 
 </details>
 </div>
