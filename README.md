@@ -4,7 +4,6 @@ To follow this workshop and copy/paste/modify the code, the easiest is to downlo
 
 ## Schedule
 
-|-------|-------|-----------------------------------|
 | From  | To    | Details                           |
 |-------|-------|-----------------------------------|
 | 9:30  | 10:00 | Intro with a coffee               |
@@ -13,7 +12,6 @@ To follow this workshop and copy/paste/modify the code, the easiest is to downlo
 | 12:00 | 13:00 | **Lunch**                         |
 | 13:00 | 14:00 | Part 2: from traitspaces to disparity (2) |
 | 14:00 | 16:00 | Part 3: from disparity to macroevolution  |
-|-------|-------|-----------------------------------|
 
 Don't worry to much if it looks packed without much coffee breaks, they are designed within in each part to refresh your brain cells and move around a bit! 
 
