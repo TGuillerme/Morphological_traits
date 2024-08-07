@@ -1,6 +1,15 @@
 # Disparity workshop - Erlangen 9th of August 2024
 
-To follow this workshop and copy/paste/modify the code, the easiest is to download this whole repository (including the `example/` folder) and just follow each session in the `gitbook/` folder.
+All the content of this course is in this [gitbook](file:///home/tguillerme/University/Teaching/Morphological_traits/gitbook/_book/index.html) if you just want to follow along online!
+
+Alternatively, to follow this workshop and copy/paste/modify the code, the easiest is to download this whole repository (including the `example/` folder) and just follow each session in the `gitbook/` folder.
+
+Optional: to compile the gitbook for yourself run the following:
+
+```{r}
+bookdown::render_book("gitbook/index.Rmd", "bookdown::gitbook")
+```
+
 
 ## Schedule
 
@@ -17,8 +26,7 @@ Don't worry to much if it looks packed without much coffee breaks, they are desi
 
 ## Content
 
-A link with all the code slides and everything will be available soon!
-But here's a run down of what we are going to cover:
+Here's a run down of what we are going to cover:
 
 #### Intro:
 
