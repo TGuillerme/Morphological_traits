@@ -1,6 +1,6 @@
 # Disparity workshop - Erlangen 9th of August 2024
 
-All the content of this course is in this [gitbook](file:///home/tguillerme/University/Teaching/Morphological_traits/gitbook/_book/index.html) if you just want to follow along online!
+All the content of this course is in this [gitbook](https://githubraw.com/TGuillerme/Morphological_traits/main/gitbook/_book/index.html) if you just want to follow along online!
 
 Alternatively, to follow this workshop and copy/paste/modify the code, the easiest is to download this whole repository (including the `example/` folder) and just follow each session in the `gitbook/` folder.
 
