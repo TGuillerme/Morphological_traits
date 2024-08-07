@@ -1,68 +1,82 @@
-# Morphological_traits
- 
-## Plan
+# Disparity workshop - Erlangen 9th of August 2024
 
-# 0 - Preface:
- 1. About me
-    * NERC Fellow at the university of Sheffield (proto lecturer?)
-    * Masters in France (Montpellier - I'm from around there), PhD in Dublin (with Natalie Cooper), Postdocs in Imperial College (near London), Brisbane (Australia), Sheffield.
-    * I work on understanding what mechanisms generate and maintain the diversity of traits through time? (but secretly I just like coding and solving stats problems)
- 2. What are we going to do?
-    * We are going to look at how we can investigate evolutionary histories by looking at morphological characters.
-    * We are going to do that by using traitspaces (a way to analyse many traits for many species) and measure the diversity of traits (disparity) to investigate evolutionary history.
- 3. How is it going to work
-    * All this is available as a bookdown file. This means that you can follow along with me through the code in your favourite IDE (e.g. R studio) or just look at the slides.
-      > Suggest: download a copy of the book and edit it for note taking etc.
-      > TODO: add some kind of magnifying glass logo for searchable "anchors" in the book.
-      > "CATCHING UP" tags to follow along.
+To follow this workshop and copy/paste/modify the code, the easiest is to download this whole repository (including the `example/` folder) and just follow each session in the `gitbook/` folder.
 
-    * I am going to switch between both all the time: the slides for when I'm rambling and the IDE for when I'm coding.
- 4. Insist in open research + collaboration (links back to About me)
-    * All this is done in bookdown (ask me more about it during the break) and is under CC0 licence. This means you can (re)use it, share it, modify it, do whatever you want with it.
-    * I make sure that my work is always open because 1) it's fun to do, 2) it's inclusive (I don't use any proprietary software for my sharable work so nobody needs to pay anything to use my work), 3) it allows for more collaboration.
-    * All my work is very collaborative, I cannot work alone. So although you will be listening to me today keep in mind that a lot of what you are listening to are ideas that I didn't came up with on my own and I got inspired and helped by many many very nice humans! (standing on the shoulders of a giant community - rather than giants)
+## Schedule
 
-# 1 - Intro :
- 1. What is trait data: very brief.
- 2. What can we do with trait data?
-   @@@TODO
-    * Phylogenetics (Rachel course next week) + PCM (tomorrow + most of the rest of the workshop! Yay!), including disparity
- 3. What is disparity?
-   @@@TODO
-    * Intro from disparity paper
- 4. Our narrative
-    * Mammals at the K-Pg
+|-------|-------|-----------------------------------|
+| From  | To    | Details                           |
+|-------|-------|-----------------------------------|
+| 9:30  | 10:00 | Intro with a coffee               |
+| 10:00 | 11:30 | Part 1: from traits to traitspaces |
+| 11:30 | 12:00 | Part 2: from traitspaces to disparity (1) |
+| 12:00 | 13:00 | **Lunch**                         |
+| 13:00 | 14:00 | Part 2: from traitspaces to disparity (2) |
+| 14:00 | 16:00 | Part 3: from disparity to macroevolution  |
+|-------|-------|-----------------------------------|
 
-# 2 - From specimens to traitspaces:
- 1. Types of trait data
-    * Continuous, gmm, discrete (qualitative, quantitative)
-    * Combining this data in a meaningful way for analyses
- 2. Why using morphological data? (why not molecular?)
-    * Objective vs. subjective: NO + only data available from the past (so there).
- 3. Missing data and estimating ancestral traits
- 4. Ordinations (ordinating or not – traitspace vs. PCA, etc.)
- 5. Different types of traitspaces
+Don't worry to much if it looks packed without much coffee breaks, they are designed within in each part to refresh your brain cells and move around a bit! 
 
+## Content
 
-# 3 - From traitspaces to disparity:
- 1. Many many dimensions: breaking physics
-    * Multidimensional nightmare
-    * Curse of dimensionality
- 2. Measuring disparity
-    * Choosing the right metric (depending on the question)
+A link with all the code slides and everything will be available soon!
+But here's a run down of what we are going to cover:
 
-# 4 - From disparity to understanding evolutionary biology:
- 1. Testing hypothesis with disparity data
- 2. Measuring disparity through time
- 3. Telling disparity stories
+#### Intro:
 
-# 5 - Conclusion
- 1. Where to go from there?
- 2. Don’t listen to (only) me!
- 3. What other people have done?
- 4. What do you want to do?
+How this is going to work
+
+[Script and notes here](/gitbook/index.Rmd)
+
+#### Part 1:
+
+[Script and notes here](/gitbook/01_traispaces.Rmd)
+
+Theory:
+
+- morphological traits
+- ordination: PCA and PCO (incl. distance matrices). 
+
+Skills:
+
+- reading trait data into R.
+- ordinating data into R.
+
+#### Part 2:
+
+[Script and notes here](/gitbook/02_disparity.Rmd)
 
 
+Theory:
 
-Bookdown prezo
- - template:  xaringan
+- what is disparity?
+- the multidimensional nightmare.
+- reducing dimensionality
+- mechanisms, processes and patterns in biology
+
+Skills:
+
+- an intro to the dispRity package
+- measuring disparity
+- reducing dimensionality
+- choosing and testing disparity metrics.
+
+#### Part 3:
+
+[Script and notes here](/gitbook/03_macroevolution.Rmd)
+
+
+Theory:
+
+- testing hypotheses with disparity
+- testing hypotheses through time
+- simple disparity models
+- phylogenetic comparative methods and disparity? [teaser for the next day]
+- disparity of disparity analyses
+
+Skills:
+
+- comparing disparity between groups
+- comparing disparity through time
+- disparity-through-time (dtt) analyses
+- disparity study design
