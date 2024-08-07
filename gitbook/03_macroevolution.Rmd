@@ -372,8 +372,7 @@ Two of the main ones are that:
 
 ### Time slicing!
 
-[SLIDES: Time slicing](../)
-<!-- gitraw link slides/03.1_time_slicing.pdf-->
+[SLIDES: Time slicing](https://raw.githack.com/TGuillerme/Morphological_traits/main/slides/03.1_time_slicing.pdf)
 
 Let's try to do a simple ACCTRAN model (accelerated transition) on ten time slices:
 

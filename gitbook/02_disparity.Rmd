@@ -77,8 +77,7 @@ We will talk more about what to measure in a bit but first I want to chat about.
 
 ## The curse of dimensionality
 
-[SLIDES: Dimensionality](../)
-<!-- gitraw link slides/02.1_dimensionality.pdf-->
+[SLIDES: Dimensionality](https://raw.githack.com/TGuillerme/Morphological_traits/main/slides/02.1_dimensionality.pdf)
 
 Basically this is a problem you get very easily when you go beyond anything three dimensional.
 When increasing the number of dimensions in your dataset things become very quickly intuitive and headache inducing, even after working on it for many years.
@@ -142,8 +141,7 @@ Usually this *X* is 95% or 99%.
 One thing to keep in mind though when you do this is that if you have groups in your traitspace (we will see how to do this later), you might want to check whether they are all equally distributed along those axes.
 For example, a reduced traitspace with 95% of the total variance does not automatically means a traitspace with at least 95% of the variance for each group.
 
-[SLIDES: The duck axis](../)
-<!-- gitraw link slides/02.2_select_axes.pdf-->
+[SLIDES: The duck axis](https://raw.githack.com/TGuillerme/Morphological_traits/main/slides/02.2_select_axes.pdf)
 
 ```{r}
 ## How many axes are needed
@@ -172,15 +170,13 @@ You can separate part of your statistical research into three components:
 
 So once you have your mechanism and process in mind you can choose your metric.
 
-[SLIDES: What? How? Why?](../)
-<!-- gitraw link slides/02.3_what_how_why.pdf-->
+[SLIDES: What? How? Why?](https://raw.githack.com/TGuillerme/Morphological_traits/main/slides/02.3_what_how_why.pdf)
 
 
 ### Choosing and testing disparity metrics
 
 
-[SLIDES: Types of metrics](../)
-<!-- gitraw link slides/02.4_different_metrics.pdf-->
+[SLIDES: Types of metrics](https://raw.githack.com/TGuillerme/Morphological_traits/main/slides/02.4_different_metrics.pdf)
 
 
 You can use the `dispRity` and `moms` pipeline to test your metric.

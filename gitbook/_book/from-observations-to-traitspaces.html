@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 From observations to traitspaces | Traits data in R</title>
+  <meta name="description" content="A guide to using morphological trait data in R" />
+  <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 From observations to traitspaces | Traits data in R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="A guide to using morphological trait data in R" />
+  <meta name="github-repo" content="TGuillerme/Morphological_traits" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 From observations to traitspaces | Traits data in R" />
+  
+  <meta name="twitter:description" content="A guide to using morphological trait data in R" />
+  
+
+<meta name="author" content="Thomas Guillerme (t.guillerme@sheffield.ac.uk)" />
+
+
+<meta name="date" content="2024-08-07" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="from-traitspaces-to-disparity.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preamble</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#mega-disclaimer"><i class="fa fa-check"></i><b>1.1</b> Mega-disclaimer</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#requirements"><i class="fa fa-check"></i><b>1.2</b> Requirements</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#general-computer-level"><i class="fa fa-check"></i><b>1.2.1</b> General computer level</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#r-level"><i class="fa fa-check"></i><b>1.2.2</b> <code>R</code> level</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#glossary"><i class="fa fa-check"></i><b>1.3</b> Glossary</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#how-does-this-work"><i class="fa fa-check"></i><b>1.4</b> How does this work?</a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="index.html"><a href="index.html#use-your-own-data"><i class="fa fa-check"></i><b>1.4.1</b> Use your own data</a></li>
+<li class="chapter" data-level="1.4.2" data-path="index.html"><a href="index.html#catching-up"><i class="fa fa-check"></i><b>1.4.2</b> Catching up</a></li>
+<li class="chapter" data-level="1.4.3" data-path="index.html"><a href="index.html#tinker-time"><i class="fa fa-check"></i><b>1.4.3</b> Tinker time!</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#help-me"><i class="fa fa-check"></i><b>1.5</b> Help me!</a></li>
+<li class="chapter" data-level="1.6" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.6</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="from-observations-to-traitspaces.html"><a href="from-observations-to-traitspaces.html"><i class="fa fa-check"></i><b>2</b> From observations to traitspaces</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="from-observations-to-traitspaces.html"><a href="from-observations-to-traitspaces.html#morphological-traits"><i class="fa fa-check"></i><b>2.1</b> Morphological traits</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="from-observations-to-traitspaces.html"><a href="from-observations-to-traitspaces.html#morphological-traits-in-the-age-of-molecular-data"><i class="fa fa-check"></i><b>2.1.1</b> Morphological traits in the age of molecular data?</a></li>
+<li class="chapter" data-level="2.1.2" data-path="from-observations-to-traitspaces.html"><a href="from-observations-to-traitspaces.html#continuous-trait-data"><i class="fa fa-check"></i><b>2.1.2</b> Continuous trait data</a></li>
+<li class="chapter" data-level="2.1.3" data-path="from-observations-to-traitspaces.html"><a href="from-observations-to-traitspaces.html#discrete-trait-data"><i class="fa fa-check"></i><b>2.1.3</b> Discrete trait data</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="from-observations-to-traitspaces.html"><a href="from-observations-to-traitspaces.html#ordinations"><i class="fa fa-check"></i><b>2.2</b> Ordinations</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="from-observations-to-traitspaces.html"><a href="from-observations-to-traitspaces.html#principal-components-analyses-pca"><i class="fa fa-check"></i><b>2.2.1</b> Principal components analyses (PCA)</a></li>
+<li class="chapter" data-level="2.2.2" data-path="from-observations-to-traitspaces.html"><a href="from-observations-to-traitspaces.html#principal-coordinates-analysis-pco"><i class="fa fa-check"></i><b>2.2.2</b> Principal coordinates analysis (PCO)</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="from-observations-to-traitspaces.html"><a href="from-observations-to-traitspaces.html#estimating-ancestral-traits"><i class="fa fa-check"></i><b>2.3</b> Estimating ancestral traits</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="from-observations-to-traitspaces.html"><a href="from-observations-to-traitspaces.html#reading-trees-into-r"><i class="fa fa-check"></i><b>2.3.1</b> Reading trees into <code>R</code></a></li>
+<li class="chapter" data-level="2.3.2" data-path="from-observations-to-traitspaces.html"><a href="from-observations-to-traitspaces.html#estimating-ancestral-traits-1"><i class="fa fa-check"></i><b>2.3.2</b> Estimating ancestral traits</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="from-observations-to-traitspaces.html"><a href="from-observations-to-traitspaces.html#references-1"><i class="fa fa-check"></i><b>2.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="from-traitspaces-to-disparity.html"><a href="from-traitspaces-to-disparity.html"><i class="fa fa-check"></i><b>3</b> From traitspaces to disparity</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="from-traitspaces-to-disparity.html"><a href="from-traitspaces-to-disparity.html#measuring-disparity"><i class="fa fa-check"></i><b>3.1</b> Measuring disparity</a></li>
+<li class="chapter" data-level="3.2" data-path="from-traitspaces-to-disparity.html"><a href="from-traitspaces-to-disparity.html#the-curse-of-dimensionality"><i class="fa fa-check"></i><b>3.2</b> The curse of dimensionality</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="from-traitspaces-to-disparity.html"><a href="from-traitspaces-to-disparity.html#reducing-the-number-of-dimensions"><i class="fa fa-check"></i><b>3.2.1</b> Reducing the number of dimensions</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="from-traitspaces-to-disparity.html"><a href="from-traitspaces-to-disparity.html#which-disparity-metric-to-use"><i class="fa fa-check"></i><b>3.3</b> Which disparity metric to use?</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="from-traitspaces-to-disparity.html"><a href="from-traitspaces-to-disparity.html#choosing-and-testing-disparity-metrics"><i class="fa fa-check"></i><b>3.3.1</b> Choosing and testing disparity metrics</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="from-traitspaces-to-disparity.html"><a href="from-traitspaces-to-disparity.html#references-2"><i class="fa fa-check"></i><b>3.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="from-disparity-to-macroevolution.html"><a href="from-disparity-to-macroevolution.html"><i class="fa fa-check"></i><b>4</b> From disparity to macroevolution</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="from-disparity-to-macroevolution.html"><a href="from-disparity-to-macroevolution.html#testing-hypothesis-with-disparity-data"><i class="fa fa-check"></i><b>4.1</b> Testing hypothesis with disparity data</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="from-disparity-to-macroevolution.html"><a href="from-disparity-to-macroevolution.html#making-subsets"><i class="fa fa-check"></i><b>4.1.1</b> Making subsets</a></li>
+<li class="chapter" data-level="4.1.2" data-path="from-disparity-to-macroevolution.html"><a href="from-disparity-to-macroevolution.html#bootstrapping-and-rarefying"><i class="fa fa-check"></i><b>4.1.2</b> Bootstrapping and rarefying</a></li>
+<li class="chapter" data-level="4.1.3" data-path="from-disparity-to-macroevolution.html"><a href="from-disparity-to-macroevolution.html#testing-hypotheses-1"><i class="fa fa-check"></i><b>4.1.3</b> Testing hypotheses 1</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="from-disparity-to-macroevolution.html"><a href="from-disparity-to-macroevolution.html#measuring-disparity-through-time"><i class="fa fa-check"></i><b>4.2</b> Measuring disparity through time</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="from-disparity-to-macroevolution.html"><a href="from-disparity-to-macroevolution.html#time-binning"><i class="fa fa-check"></i><b>4.2.1</b> Time binning</a></li>
+<li class="chapter" data-level="4.2.2" data-path="from-disparity-to-macroevolution.html"><a href="from-disparity-to-macroevolution.html#time-slicing"><i class="fa fa-check"></i><b>4.2.2</b> Time slicing!</a></li>
+<li class="chapter" data-level="4.2.3" data-path="from-disparity-to-macroevolution.html"><a href="from-disparity-to-macroevolution.html#dtt-disparity-through-time"><i class="fa fa-check"></i><b>4.2.3</b> <code>dtt</code>: disparity through time</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="from-disparity-to-macroevolution.html"><a href="from-disparity-to-macroevolution.html#measuring-disparity-with-trees"><i class="fa fa-check"></i><b>4.3</b> Measuring disparity with trees</a></li>
+<li class="chapter" data-level="4.4" data-path="from-disparity-to-macroevolution.html"><a href="from-disparity-to-macroevolution.html#telling-disparity-stories"><i class="fa fa-check"></i><b>4.4</b> Telling disparity stories</a></li>
+<li class="chapter" data-level="4.5" data-path="from-disparity-to-macroevolution.html"><a href="from-disparity-to-macroevolution.html#references-3"><i class="fa fa-check"></i><b>4.5</b> References</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Traits data in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="from-observations-to-traitspaces" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">2</span> From observations to traitspaces<a href="from-observations-to-traitspaces.html#from-observations-to-traitspaces" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Here we will look how to go from some observations to a traitspace in <code>R</code>.
+This step allows us to go from observed/collected data into a multidimensional traitspace that we can then analyse further for our research.</p>
+<div class="figure">
+<img src="../images/figure_data.png" alt="" />
+<p class="caption">Types of morphological data - From <span class="citation">Guillerme, Cooper, et al. (<a href="#ref-guillerme2020disparities" role="doc-biblioref">2020</a>)</span></p>
+</div>
+<div id="morphological-traits" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Morphological traits<a href="from-observations-to-traitspaces.html#morphological-traits" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="morphological-traits-in-the-age-of-molecular-data" class="section level3 hasAnchor" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> Morphological traits in the age of molecular data?<a href="from-observations-to-traitspaces.html#morphological-traits-in-the-age-of-molecular-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In a recent paper I reviewed (hopefully to be published soon - it’s going to be a super useful piece of work for the community!), the authors made a distinction between molecular characters being objective and morphological ones being subjective.
+The common idea is that you put some DNA in a machine and get some sequence of letters out of it (ACTG) which appears to be more objective than going into a museum and comparing specimens with your expert eyes.
+And here’s my rant on why I disagree:</p>
+<p>TL;DR:
+I think the comparison “molecular = objective” and “morphological = subjective” is a false comparison.
+This might be because of a dual meaning of these two words:</p>
+<ul>
+<li>Subjectivity and objectivity as a epistemoligical concept where something is subjective when it’s link to a person’s experience and something is objective when it’s not. But both morphological and molecular characters are mostly objective in their description (i.e. the character is not linked to a person’s experience) but mostly subjective in their use (i.e. the character’s usage is linked to a person’s experience)/</li>
+<li>But also in research we tend to associate these words to a moral judgment when referring to our work: objective = good and subjective = bad. Which again is both true and false for any character: we should use the method best adapted to a certain type of character (to our knowledge) so the character is always, in that sense <em>objectively</em> good (in a subjective sense; i.e. to the best of our knowledge).</li>
+</ul>
+<p>Regarding the first meaning (epistemological):
+Although molecular characters are objective (there is a nucleotide “A” in position <em>n</em> on gene Y regardless of a person’s experience), morphological characters can be equally objective (there are 4 cusps on this teeth; or in continuous terms: this bone is longer than another one).
+Furthermore, often authors are not only interested in the characters (molecular and morphological) but how they are used for a research purpose (e.g. building a tree).
+This comes with many arbitrary decisions in both cases (i.e. subjective choice - not bad choices, <em>cf</em> the second meaning of the words below).
+For example, workers building phylogenies based on molecular characters have to make a lot of arbitrary decisions on which genes to use based on time, cost and availability constraints.
+Maybe the comparison should be more along the lines of “molecular = easier to automatise” and “morphological = harder to automatise” (although both are probably not true when diving into it: this was true 20 years ago, less so nowadays).</p>
+<p>Regarding the second meaning (moral judgment; objective = good, subjective = bad):
+Although continuous measurements appear to be more objective (<em>sensu</em> 1st meaning: “bone A is of length X”) and this <em>better</em> for the aim of the worker (<em>sensu</em> 2nd meaning; “it’s better to use continuous characters to build a morphological tree” - see this one by the way: <span class="citation">Parins-Fukuchi (<a href="#ref-parins2018use" role="doc-biblioref">2018</a>)</span>).
+It might not be the case when choosing another method (subjective; <em>sensu</em> 1st meaning) where discrete morphological characters are more subjective (<em>sensu</em> 1st meaning; an expert chose to spend time encoding character X rather than character Y) but it leads to <em>better</em> results depending on the method (<em>sensu</em> 2nd meaning; when using parsimony, trees are better when expert chose the characters - i.e. the trees end up being more useful to the community).
+This applies also to molecular characters when workers tend to use the GTR model with 4 categories of rates approximating a Gamma distribution (rarely another number).
+This can be equally seen as a subjective choice (1st meaning) leading to an objective improvement (2nd meaning).</p>
+</div>
+<div id="continuous-trait-data" class="section level3 hasAnchor" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> Continuous trait data<a href="from-observations-to-traitspaces.html#continuous-trait-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>This method is one of the easiest.
+Continuous data is often measured as standard physical units (e.g. meters, grams, seconds, etc.) and can be read directly from a data file in <code>R</code>.
+On easiest data file format is <code>csv</code> (“comma separated values”) that is easily generated from most spreadsheet editor (usually they have an option “Save As… &gt; .csv”).
+These files look something like this:</p>
+<pre><code>         ,variable 1, variable 2
+species_a, 1.23, 4.56
+species_b, 7.89, 0.12</code></pre>
+<p>and can be read in <code>R</code> using <code>read.csv</code>.</p>
+<div class="warning" style="padding:0.1em; background-color:#5D7BBB; color:#092663">
+<p><strong>USE YOUR DATA</strong>: load your own continuous data</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="from-observations-to-traitspaces.html#cb8-1" aria-hidden="true"></a>my_continuous_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;path_to_my_file.csv&quot;</span>)</span></code></pre></div>
+<p>You can also use <code>read.csv(..., row.names = &lt;column_number&gt;</code> to directly read one column as the rownames:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="from-observations-to-traitspaces.html#cb9-1" aria-hidden="true"></a>my_continuous_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;path_to_my_file.csv&quot;</span>, <span class="dt">row.names =</span> <span class="dv">1</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="discrete-trait-data" class="section level3 hasAnchor" number="2.1.3">
+<h3><span class="header-section-number">2.1.3</span> Discrete trait data<a href="from-observations-to-traitspaces.html#discrete-trait-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="glossary-1" class="section level4 hasAnchor" number="2.1.3.1">
+<h4><span class="header-section-number">2.1.3.1</span> Glossary<a href="from-observations-to-traitspaces.html#glossary-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>There are many specific terms when coming to discrete morphological characters, here is a list of some that I use (though note that the definitions here are my own, there is no standard or correct one!).
+My version is heavily inspired by <span class="citation">Brazeau (<a href="#ref-brazeau2011problematic" role="doc-biblioref">2011</a>)</span>.</p>
+<ul>
+<li><strong>character</strong>: this is a trait (e.g.: “snout length”)</li>
+<li><strong>state</strong>: this is one of the potential discrete value the state can have for a specific species (e.g. “snout length: short, long”)</li>
+<li><strong>token</strong>: this the symbol used to represent the state for a specific character (e.g. “snout length: short (0), long (1)”)</li>
+<li><strong>ordered</strong>/<strong>unordered</strong>: this designates whether the character is ordered (e.g. “snout length: short, medium, long”) or whether it is unordered (e.g. “habitat: aquatic, arboreal, fossorial”)</li>
+<li><strong>ambiguity</strong>: this designates whether the state for a specific species is known or not (see possible list below):</li>
+<li><strong>missing</strong>: this is when the ambiguity is unknown: e.g. the feature to describe the character is not available. This is often encoded with the token <code>"?"</code>.</li>
+<li><strong>inapplicable</strong>: this is when the ambiguity is known but not relevant: e.g. the character “Wing colour” for a dog (it’s not missing, it just doesn’t exist). This is often encoded with the token <code>"-"</code>.</li>
+<li><strong>uncertain</strong>: this is when the state is unknown but only between certain states. For example, for a character “snout length: short(0), medium(1), long(2)” for a fossil species with a damaged snout (but that doesn’t look short), we could code it as either “medium OR long” (often using the tokens: <code>"1/2"</code>).</li>
+<li><strong>polymorphic</strong>: this is when a state has multiple observed states. For example, for the same character as before, a species could have both mediums AND long snouts (depending on the specimens). It is then often encoded using the tokens <code>"1&amp;2"</code>.</li>
+</ul>
+<p>Discrete characters can be stored in a simple spreadsheet as for continuous traits:</p>
+<pre><code>         ,character 1, character 2
+species_a, 0, ?
+species_b, 0, 1</code></pre>
+<p>They can be input using the <code>read.csv</code> function as above. Easy.</p>
+<p>But more commonly, discrete morphological characters are stored in <code>.nexus</code>/<code>.nex</code> files.
+These are standardised comparative methods files with meta data and a list of characters.
+They are very commonly used both for molecular and morphological data.
+You can recognise them easily, they always start on the first line with <code>#NEXUS</code> and can contain more or less a lot of metadata.
+I’m not going to go in the details here but most of the time you can read them easily with <code>ape::read.nexus.data</code> or <code>Claddis::read_nexus_matrix</code>.</p>
+<div class="warning" style="padding:0.1em; background-color:#5D7BBB; color:#092663">
+<p><strong>USE YOUR DATA</strong>: load your own discrete data</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="from-observations-to-traitspaces.html#cb11-1" aria-hidden="true"></a>discrete_traits &lt;-<span class="st"> </span><span class="kw">read.nexus.data</span>(<span class="st">&quot;path_to_my_file.nex&quot;</span>)</span></code></pre></div>
+</div>
+<p>Note that they can be a bit more complicated to input depending on how they were formated.
+Sometimes they require a bit of editing to avoid error messages.
+Here is a comprehensive list of things to look out for when importing discrete morphological characters:</p>
+<ul>
+<li>SPACES!</li>
+</ul>
+<p>That’s it. Basically all the problems come from extra spaces in the matrix chunk in the nexus file. To avoid any: only use spaces to separate the element name (species, genera, specimen, etc.) and the string of characters.
+For example this is a good format:</p>
+<pre><code>species_name 0100010???{01}11(01)001</code></pre>
+<p>But all these are gonna create problems:</p>
+<pre><code>species name 0100010???{01}11(01)001
+species_name 010001 0???{01}1 1(01)001
+species_name 0100010???{0 1}11(0 1)001</code></pre>
+<!-- ### Geometric morphometric data 
+
+TODO
+
+-->
+</div>
+</div>
+</div>
+<div id="ordinations" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Ordinations<a href="from-observations-to-traitspaces.html#ordinations" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="14%" />
+<col width="22%" />
+<col width="32%" />
+<col width="30%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Variables</th>
+<th>Distances</th>
+<th><code>R</code> functions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Principal component analyses (PCA)</td>
+<td>Continuous</td>
+<td>Euclidean (no need for a distance matrix)</td>
+<td><code>stats::prcomp</code>, <code>stats::princomp</code></td>
+</tr>
+<tr class="even">
+<td>Principal coordinates analysis (PCO, PCoA), Multidimensional scaling (MDS), Non-metric MDS (NMDS)</td>
+<td>Continuous, discrete, complex</td>
+<td>Any distance (needs a distance matrix)</td>
+<td><code>stats::cmdscale</code></td>
+</tr>
+</tbody>
+</table>
+<p>(table adapted from <span class="citation">Legendre and Legendre (<a href="#ref-legendre2012numerical" role="doc-biblioref">2012</a>)</span>).</p>
+<div id="principal-components-analyses-pca" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Principal components analyses (PCA)<a href="from-observations-to-traitspaces.html#principal-components-analyses-pca" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><a href="https://raw.githack.com/TGuillerme/Morphological_traits/main/slides/01.1_PCA.pdf">SLIDES: PCA</a></p>
+<div class="warning" style="padding:0.1em; background-color:#FFAF70; color:#954200">
+<p><strong>CATCHING UP ZONE</strong>: here’s some example of continuous data if you didn’t import your own.
+This is a dataset of 24 continuous measurements from 60 observations (species of skinks) from <span class="citation">Brennan et al. (<a href="#ref-brennan2024evolutionary" role="doc-biblioref">2024</a>)</span> :</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="from-observations-to-traitspaces.html#cb14-1" aria-hidden="true"></a><span class="co">## Continuous data</span></span>
+<span id="cb14-2"><a href="from-observations-to-traitspaces.html#cb14-2" aria-hidden="true"></a>continuous_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;../examples/continuous_characters/Brennan2024.csv&quot;</span>,</span>
+<span id="cb14-3"><a href="from-observations-to-traitspaces.html#cb14-3" aria-hidden="true"></a>                            <span class="dt">row.names =</span> <span class="dv">1</span>)</span></code></pre></div>
+</div>
+<p>To do a PCA, it’s pretty simple, you can use the function <code>prcomp</code> or <code>princomp</code>.
+They are very different function in that they do the exact same things but their outputs have different names.
+To access the PCA matrix for <code>prcomp</code> you need to call <code>my_pca$x</code> and for <code>princomp</code> it’s <code>my_pca$scores</code>.
+But they’re fundamentally the same thing.
+Here’s how to compute it as well as measuring the loadings, i.e. the amount of variance explained per dimensions:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="from-observations-to-traitspaces.html#cb15-1" aria-hidden="true"></a><span class="co">## Ordinating some data with prcomp</span></span>
+<span id="cb15-2"><a href="from-observations-to-traitspaces.html#cb15-2" aria-hidden="true"></a>my_ordination &lt;-<span class="st"> </span><span class="kw">prcomp</span>(continuous_data)</span>
+<span id="cb15-3"><a href="from-observations-to-traitspaces.html#cb15-3" aria-hidden="true"></a><span class="co">## Getting the trait space</span></span>
+<span id="cb15-4"><a href="from-observations-to-traitspaces.html#cb15-4" aria-hidden="true"></a>my_traitspace &lt;-<span class="st"> </span>my_ordination<span class="op">$</span>x</span>
+<span id="cb15-5"><a href="from-observations-to-traitspaces.html#cb15-5" aria-hidden="true"></a><span class="co">## Measuring the &quot;loading&quot; (the variance per dimension)</span></span>
+<span id="cb15-6"><a href="from-observations-to-traitspaces.html#cb15-6" aria-hidden="true"></a>my_loadings &lt;-<span class="st"> </span><span class="kw">apply</span>(my_traitspace, <span class="dv">2</span>, var)<span class="op">/</span><span class="kw">sum</span>(<span class="kw">apply</span>(my_traitspace, <span class="dv">2</span>, var))</span></code></pre></div>
+<p>Alternatively you can calculate the loadings by using the <code>$sdev</code> component that is the square root of the eigenvalues (so the loadings are the scaled squared <code>$sdev</code> component) but personally I prefer calculating it using the variance (I find it easier to understand).</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="from-observations-to-traitspaces.html#cb16-1" aria-hidden="true"></a><span class="co">## Alternatively variance loading calculation</span></span>
+<span id="cb16-2"><a href="from-observations-to-traitspaces.html#cb16-2" aria-hidden="true"></a>my_ordination<span class="op">$</span>sdev<span class="op">^</span><span class="dv">2</span><span class="op">/</span><span class="kw">sum</span>(my_ordination<span class="op">$</span>sdev<span class="op">^</span><span class="dv">2</span>)</span></code></pre></div>
+<pre><code>##  [1] 7.885555e-01 1.789772e-01 2.427367e-02 2.471291e-03 2.038708e-03
+##  [6] 1.161455e-03 7.586403e-04 4.199369e-04 3.708986e-04 2.988461e-04
+## [11] 1.917230e-04 1.296428e-04 9.967757e-05 7.058466e-05 5.630608e-05
+## [16] 3.549546e-05 3.026064e-05 2.576774e-05 1.410035e-05 1.252596e-05
+## [21] 7.728232e-06 6.153455e-32 1.940995e-32 1.770047e-33</code></pre>
+<p>Visualising the ordination of the data:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="from-observations-to-traitspaces.html#cb18-1" aria-hidden="true"></a>op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb18-2"><a href="from-observations-to-traitspaces.html#cb18-2" aria-hidden="true"></a><span class="co">## Plotting the original data</span></span>
+<span id="cb18-3"><a href="from-observations-to-traitspaces.html#cb18-3" aria-hidden="true"></a><span class="kw">plot</span>(my_traitspace[, <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)],</span>
+<span id="cb18-4"><a href="from-observations-to-traitspaces.html#cb18-4" aria-hidden="true"></a>     <span class="dt">xlab =</span> <span class="st">&quot;dimension 1&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;dimension 2&quot;</span>, <span class="dt">pch =</span> <span class="dv">19</span>)</span>
+<span id="cb18-5"><a href="from-observations-to-traitspaces.html#cb18-5" aria-hidden="true"></a><span class="co">## Adding another plot with the loadings</span></span>
+<span id="cb18-6"><a href="from-observations-to-traitspaces.html#cb18-6" aria-hidden="true"></a><span class="kw">barplot</span>(my_loadings, <span class="dt">ylab =</span> <span class="st">&quot;% variance&quot;</span>)</span></code></pre></div>
+<p><img src="trait_data_files/figure-html/unnamed-chunk-13-1.png" width="1152" /></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="from-observations-to-traitspaces.html#cb19-1" aria-hidden="true"></a><span class="kw">par</span>(op)</span></code></pre></div>
+</div>
+<div id="principal-coordinates-analysis-pco" class="section level3 hasAnchor" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> Principal coordinates analysis (PCO)<a href="from-observations-to-traitspaces.html#principal-coordinates-analysis-pco" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="warning" style="padding:0.1em; background-color:#FFAF70; color:#954200">
+<p><strong>CATCHING UP ZONE</strong>: here’s some example of discrete data if you didn’t import your own.
+This is a dataset from <span class="citation">Beck and Lee (<a href="#ref-beck2014ancient" role="doc-biblioref">2014</a>)</span> of 106 mammal species (mainly fossils) and 421 characters.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="from-observations-to-traitspaces.html#cb20-1" aria-hidden="true"></a><span class="co">## 421 discrete morphological characters</span></span>
+<span id="cb20-2"><a href="from-observations-to-traitspaces.html#cb20-2" aria-hidden="true"></a>discrete_traits &lt;-<span class="st"> </span><span class="kw">read.nexus.data</span>(<span class="st">&quot;../examples/discrete_characters/Beck2014.nex&quot;</span>)</span>
+<span id="cb20-3"><a href="from-observations-to-traitspaces.html#cb20-3" aria-hidden="true"></a><span class="co">## Combine the output list into a matrix (rows are species and columns are characters)</span></span>
+<span id="cb20-4"><a href="from-observations-to-traitspaces.html#cb20-4" aria-hidden="true"></a>traits_matrix &lt;-<span class="st"> </span><span class="kw">do.call</span>(rbind, discrete_traits)</span></code></pre></div>
+</div>
+<p>PCOs are also pretty easy but unlike PCAs they require one extra step before ordinating the variance-covariance: calculating the distance matrix.</p>
+<div id="distance-matrices" class="section level4 hasAnchor" number="2.2.2.1">
+<h4><span class="header-section-number">2.2.2.1</span> Distance matrices<a href="from-observations-to-traitspaces.html#distance-matrices" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><a href="https://raw.githack.com/TGuillerme/Morphological_traits/main/slides/01.2_PC0.pdf">SLIDES: PC0</a></p>
+<p>There are many ways to calculate distance matrices from discrete morphological characters.
+See this very good review for more information: <span class="citation">Lloyd (<a href="#ref-lloyd2016estimating" role="doc-biblioref">2016</a>)</span>.
+In short the type of distance metric should depend on the quality of your data (amount of missing or uncertain data) and the type of characters (binary, ordered or not, etc.).</p>
+<p>The most comprehensive way to measure distance matrices can be done by using the <code>Claddis::calculate_morphological_distances</code> which allows for many many options to tailor the distance metric (and special behaviours) to your own dataset.</p>
+<p>However, here we will be using the more generic <code>dispRity::char.diff</code> function that is faster but is designed for a more general purpose so lacks some of the options from <code>Claddis</code>.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="from-observations-to-traitspaces.html#cb21-1" aria-hidden="true"></a><span class="co">## Calculating the maximum observable distance</span></span>
+<span id="cb21-2"><a href="from-observations-to-traitspaces.html#cb21-2" aria-hidden="true"></a>distance_matrix &lt;-<span class="st"> </span><span class="kw">char.diff</span>(traits_matrix, <span class="dt">method =</span> <span class="st">&quot;mord&quot;</span>, <span class="dt">by.col =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<p>Note that here we are going all by default which is useful to get everyone on board for a workshop but is definitely not what you should do for your research!
+Always have a look at the default hidden options and what they’re doing!</p>
+<p>For example in this instance with the data from <span class="citation">Beck and Lee (<a href="#ref-beck2014ancient" role="doc-biblioref">2014</a>)</span> we treated all the characters as unordered (you can change that with the option <code>order = c(TRUE, FALSE, TRUE, ...)</code> for every character if they are to be treated as ordered (<code>TRUE</code>) or not (<code>FALSE</code>)).
+Also, we have decided to treat encoded ambiguities in a standard default way where question marks (<code>"?"</code>) are treated as missing values and interpreted as all possible character states and <code>"\"</code> designated ambiguous characters and where treated as any ambiguous state marked here (e.g. <code>"0\2"</code> is either state <code>0</code> or <code>2</code> - but not any other state, e.g. <code>1</code>).
+You can personalise the way you want to interpret these characters by giving a different list of token definition and</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="from-observations-to-traitspaces.html#cb22-1" aria-hidden="true"></a><span class="co">## Calculating the maximum observable distance</span></span>
+<span id="cb22-2"><a href="from-observations-to-traitspaces.html#cb22-2" aria-hidden="true"></a>distance_matrix2 &lt;-<span class="st"> </span><span class="kw">char.diff</span>(traits_matrix, <span class="dt">method =</span> <span class="st">&quot;mord&quot;</span>, <span class="dt">by.col =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb22-3"><a href="from-observations-to-traitspaces.html#cb22-3" aria-hidden="true"></a>                              <span class="co"># defining the special token and it&#39;s name</span></span>
+<span id="cb22-4"><a href="from-observations-to-traitspaces.html#cb22-4" aria-hidden="true"></a>                              <span class="dt">special.tokens =</span> <span class="kw">c</span>(<span class="st">&quot;missing&quot;</span> =<span class="st"> &quot;</span><span class="ch">\\</span><span class="st">?&quot;</span>),</span>
+<span id="cb22-5"><a href="from-observations-to-traitspaces.html#cb22-5" aria-hidden="true"></a>                              <span class="co"># defining the behaviour (always returning 1, the first state)</span></span>
+<span id="cb22-6"><a href="from-observations-to-traitspaces.html#cb22-6" aria-hidden="true"></a>                              <span class="dt">special.behaviour =</span> <span class="kw">list</span>(<span class="dt">missing =</span> <span class="cf">function</span>(x,y) <span class="kw">return</span>(<span class="dv">1</span>))</span>
+<span id="cb22-7"><a href="from-observations-to-traitspaces.html#cb22-7" aria-hidden="true"></a>                              )</span></code></pre></div>
+<p>This change results in a very different distance matrix (and is probably not very pertinent for this specific dataset!).</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="from-observations-to-traitspaces.html#cb23-1" aria-hidden="true"></a>op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb23-2"><a href="from-observations-to-traitspaces.html#cb23-2" aria-hidden="true"></a><span class="co">## Plotting the original data</span></span>
+<span id="cb23-3"><a href="from-observations-to-traitspaces.html#cb23-3" aria-hidden="true"></a><span class="kw">plot</span>(distance_matrix, <span class="dt">main =</span> <span class="st">&quot;? = any state&quot;</span>)</span>
+<span id="cb23-4"><a href="from-observations-to-traitspaces.html#cb23-4" aria-hidden="true"></a><span class="co">## Adding another plot with the loadings</span></span>
+<span id="cb23-5"><a href="from-observations-to-traitspaces.html#cb23-5" aria-hidden="true"></a><span class="kw">plot</span>(distance_matrix2, <span class="dt">main =</span> <span class="st">&quot;? = state 0&quot;</span>)</span></code></pre></div>
+<p><img src="trait_data_files/figure-html/unnamed-chunk-17-1.png" width="1152" /></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="from-observations-to-traitspaces.html#cb24-1" aria-hidden="true"></a><span class="kw">par</span>(op)</span></code></pre></div>
+<div class="warning" style="padding:0.1em; background-color:#65D85F; color:#067800">
+<p><strong>TINKER TIMES</strong>: You can also play around with the different type of distance metrics and see how that affects the results by changing the option <code>method</code>.
+Have a read in the manual for the details (<code>?char.diff</code>).</p>
+<details>
+<p><summary>[<strong>Click to expand the solution</strong>]:
+</summary></p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="from-observations-to-traitspaces.html#cb25-1" aria-hidden="true"></a><span class="co">## Four different metrics</span></span>
+<span id="cb25-2"><a href="from-observations-to-traitspaces.html#cb25-2" aria-hidden="true"></a>distance_mord      &lt;-<span class="st"> </span><span class="kw">char.diff</span>(traits_matrix, <span class="dt">method =</span> <span class="st">&quot;mord&quot;</span>, <span class="dt">by.col =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb25-3"><a href="from-observations-to-traitspaces.html#cb25-3" aria-hidden="true"></a>distance_hamming   &lt;-<span class="st"> </span><span class="kw">char.diff</span>(traits_matrix, <span class="dt">method =</span> <span class="st">&quot;hamming&quot;</span>, <span class="dt">by.col =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb25-4"><a href="from-observations-to-traitspaces.html#cb25-4" aria-hidden="true"></a>distance_euclidean &lt;-<span class="st"> </span><span class="kw">char.diff</span>(traits_matrix, <span class="dt">method =</span> <span class="st">&quot;euclidean&quot;</span>, <span class="dt">by.col =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb25-5"><a href="from-observations-to-traitspaces.html#cb25-5" aria-hidden="true"></a>distance_manhattan &lt;-<span class="st"> </span><span class="kw">char.diff</span>(traits_matrix, <span class="dt">method =</span> <span class="st">&quot;manhattan&quot;</span>, <span class="dt">by.col =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb25-6"><a href="from-observations-to-traitspaces.html#cb25-6" aria-hidden="true"></a></span>
+<span id="cb25-7"><a href="from-observations-to-traitspaces.html#cb25-7" aria-hidden="true"></a><span class="co">## Plotting the results</span></span>
+<span id="cb25-8"><a href="from-observations-to-traitspaces.html#cb25-8" aria-hidden="true"></a>op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb25-9"><a href="from-observations-to-traitspaces.html#cb25-9" aria-hidden="true"></a><span class="kw">plot</span>(distance_mord, <span class="dt">main =</span> <span class="st">&quot;mord&quot;</span>)</span>
+<span id="cb25-10"><a href="from-observations-to-traitspaces.html#cb25-10" aria-hidden="true"></a><span class="kw">plot</span>(distance_hamming, <span class="dt">main =</span> <span class="st">&quot;hamming&quot;</span>)</span>
+<span id="cb25-11"><a href="from-observations-to-traitspaces.html#cb25-11" aria-hidden="true"></a><span class="kw">plot</span>(distance_euclidean, <span class="dt">main =</span> <span class="st">&quot;euclidean&quot;</span>)</span>
+<span id="cb25-12"><a href="from-observations-to-traitspaces.html#cb25-12" aria-hidden="true"></a><span class="kw">plot</span>(distance_manhattan, <span class="dt">main =</span> <span class="st">&quot;manhattan&quot;</span>)</span></code></pre></div>
+<p><img src="trait_data_files/figure-html/unnamed-chunk-18-1.png" width="1152" /></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="from-observations-to-traitspaces.html#cb26-1" aria-hidden="true"></a><span class="kw">par</span>(op)</span></code></pre></div>
+</details>
+</div>
+</div>
+<div id="pco" class="section level4 hasAnchor" number="2.2.2.2">
+<h4><span class="header-section-number">2.2.2.2</span> PCO<a href="from-observations-to-traitspaces.html#pco" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Once you have a distance matrix, you can ordinated it using the <code>cmdscale</code> function which works similarly to a Principal Components Analysis.
+One minor subtlety though is that you have to choose the number of dimensions (<code>k</code>) and might or might not use a correction to treat the distance matrix as Euclidean or not.
+Regarding the number of dimensions, a good practice is to use the number of species minus 2 to allow for the biggest spread of the variance (i.e. to avoid cramming the variance in the first dimensions).
+Regarding the correction, if you don’t use a simple Euclidean distance metric, use the option <code>add = TRUE</code> to use the <span class="citation">Cailliez (<a href="#ref-cailliez1983analytical" role="doc-biblioref">1983</a>)</span> correction (which adds an estimated constant to make the distances Euclidean).</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="from-observations-to-traitspaces.html#cb27-1" aria-hidden="true"></a><span class="co">## Ordinating a distance matrix</span></span>
+<span id="cb27-2"><a href="from-observations-to-traitspaces.html#cb27-2" aria-hidden="true"></a>my_pco &lt;-<span class="st"> </span><span class="kw">cmdscale</span>(distance_matrix,</span>
+<span id="cb27-3"><a href="from-observations-to-traitspaces.html#cb27-3" aria-hidden="true"></a>                   <span class="co"># the number of dimensions</span></span>
+<span id="cb27-4"><a href="from-observations-to-traitspaces.html#cb27-4" aria-hidden="true"></a>                   <span class="dt">k =</span> <span class="kw">ncol</span>(distance_matrix)<span class="op">-</span><span class="dv">2</span>,</span>
+<span id="cb27-5"><a href="from-observations-to-traitspaces.html#cb27-5" aria-hidden="true"></a>                   <span class="co"># the Cailliez correction</span></span>
+<span id="cb27-6"><a href="from-observations-to-traitspaces.html#cb27-6" aria-hidden="true"></a>                   <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb27-7"><a href="from-observations-to-traitspaces.html#cb27-7" aria-hidden="true"></a></span>
+<span id="cb27-8"><a href="from-observations-to-traitspaces.html#cb27-8" aria-hidden="true"></a><span class="co">## Getting just the coordinates</span></span>
+<span id="cb27-9"><a href="from-observations-to-traitspaces.html#cb27-9" aria-hidden="true"></a>my_traitspace &lt;-<span class="st"> </span>my_pco<span class="op">$</span>points</span>
+<span id="cb27-10"><a href="from-observations-to-traitspaces.html#cb27-10" aria-hidden="true"></a>my_loadings &lt;-<span class="st"> </span><span class="kw">apply</span>(my_traitspace, <span class="dv">2</span>, var)<span class="op">/</span><span class="kw">sum</span>(<span class="kw">apply</span>(my_traitspace, <span class="dv">2</span>, var))</span></code></pre></div>
+<p>And we can visualise the first two dimensions and the distribution of the variance per dimensions:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="from-observations-to-traitspaces.html#cb28-1" aria-hidden="true"></a>op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb28-2"><a href="from-observations-to-traitspaces.html#cb28-2" aria-hidden="true"></a><span class="co">## Plotting the original data</span></span>
+<span id="cb28-3"><a href="from-observations-to-traitspaces.html#cb28-3" aria-hidden="true"></a><span class="kw">plot</span>(my_traitspace[, <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)],</span>
+<span id="cb28-4"><a href="from-observations-to-traitspaces.html#cb28-4" aria-hidden="true"></a>     <span class="dt">xlab =</span> <span class="st">&quot;dimension 1&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;dimension 2&quot;</span>, <span class="dt">pch =</span> <span class="dv">19</span>)</span>
+<span id="cb28-5"><a href="from-observations-to-traitspaces.html#cb28-5" aria-hidden="true"></a><span class="co">## Adding another plot with the loadings</span></span>
+<span id="cb28-6"><a href="from-observations-to-traitspaces.html#cb28-6" aria-hidden="true"></a><span class="kw">barplot</span>(my_loadings, <span class="dt">ylab =</span> <span class="st">&quot;% variance&quot;</span>)</span></code></pre></div>
+<p><img src="trait_data_files/figure-html/unnamed-chunk-20-1.png" width="1152" /></p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="from-observations-to-traitspaces.html#cb29-1" aria-hidden="true"></a><span class="kw">par</span>(op)</span></code></pre></div>
+<!--
+## Missing data 
+-->
+</div>
+</div>
+</div>
+<div id="estimating-ancestral-traits" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Estimating ancestral traits<a href="from-observations-to-traitspaces.html#estimating-ancestral-traits" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="reading-trees-into-r" class="section level3 hasAnchor" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> Reading trees into <code>R</code><a href="from-observations-to-traitspaces.html#reading-trees-into-r" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Reading phylogenetic trees in R is rather easy: you can use either the <code>ape::read.tree</code> function for reading a tree in newick format (a text file starting with “(”) or <code>ape::read.nexus</code> for reading a nexus tree (a text file starting with “#NEXUS”).</p>
+<blockquote>
+<p><code>read.tree</code> or <code>read.nexus</code>? Can’t decide which one to use? You can use this custom made function that will always decide for you:</p>
+</blockquote>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="from-observations-to-traitspaces.html#cb30-1" aria-hidden="true"></a>read.any.tree &lt;-<span class="st"> </span><span class="cf">function</span>(file) {</span>
+<span id="cb30-2"><a href="from-observations-to-traitspaces.html#cb30-2" aria-hidden="true"></a>    <span class="co">## Check whether the first line of the file is &quot;#NEXUS&quot;</span></span>
+<span id="cb30-3"><a href="from-observations-to-traitspaces.html#cb30-3" aria-hidden="true"></a>    <span class="cf">if</span>(<span class="kw">scan</span>(<span class="dt">what =</span> <span class="st">&quot;#NEXUS&quot;</span>, <span class="dt">file =</span> file, <span class="dt">nlines =</span> <span class="dv">1</span>, <span class="dt">quiet =</span> <span class="ot">TRUE</span>) <span class="op">==</span><span class="st"> &quot;#NEXUS&quot;</span>) {</span>
+<span id="cb30-4"><a href="from-observations-to-traitspaces.html#cb30-4" aria-hidden="true"></a>        <span class="co">## The tree is a true nexus</span></span>
+<span id="cb30-5"><a href="from-observations-to-traitspaces.html#cb30-5" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="kw">read.nexus</span>(file))</span>
+<span id="cb30-6"><a href="from-observations-to-traitspaces.html#cb30-6" aria-hidden="true"></a>    } <span class="cf">else</span> {</span>
+<span id="cb30-7"><a href="from-observations-to-traitspaces.html#cb30-7" aria-hidden="true"></a>        <span class="co">## The tree is a true newick</span></span>
+<span id="cb30-8"><a href="from-observations-to-traitspaces.html#cb30-8" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="kw">read.tree</span>(file))</span>
+<span id="cb30-9"><a href="from-observations-to-traitspaces.html#cb30-9" aria-hidden="true"></a>    }</span>
+<span id="cb30-10"><a href="from-observations-to-traitspaces.html#cb30-10" aria-hidden="true"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="from-observations-to-traitspaces.html#cb31-1" aria-hidden="true"></a><span class="co">## Reading a newick tree</span></span>
+<span id="cb31-2"><a href="from-observations-to-traitspaces.html#cb31-2" aria-hidden="true"></a>my_tree &lt;-<span class="st"> </span><span class="kw">read.tree</span>(<span class="st">&quot;path_to_my_file.newick&quot;</span>)</span>
+<span id="cb31-3"><a href="from-observations-to-traitspaces.html#cb31-3" aria-hidden="true"></a><span class="co">## Reading a nexus tree</span></span>
+<span id="cb31-4"><a href="from-observations-to-traitspaces.html#cb31-4" aria-hidden="true"></a>my_tree &lt;-<span class="st"> </span><span class="kw">read.nexus</span>(<span class="st">&quot;path_to_my_file.nexus&quot;</span>)</span>
+<span id="cb31-5"><a href="from-observations-to-traitspaces.html#cb31-5" aria-hidden="true"></a><span class="co">## Reading any tree</span></span>
+<span id="cb31-6"><a href="from-observations-to-traitspaces.html#cb31-6" aria-hidden="true"></a>my_tree &lt;-<span class="st"> </span><span class="kw">read.any.tree</span>(<span class="st">&quot;path_to_my_file.dontknow&quot;</span>)</span></code></pre></div>
+<div class="warning" style="padding:0.1em; background-color:#FFAF70; color:#954200">
+<p><strong>CATCHING UP ZONE</strong>: here’s some example of discrete and continuous data and tree if you didn’t import your own.</p>
+<p>This first chunk is a continuous dataset of 24 measurements from 60 observations (species of skinks) from <span class="citation">Brennan et al. (<a href="#ref-brennan2024evolutionary" role="doc-biblioref">2024</a>)</span> :</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="from-observations-to-traitspaces.html#cb32-1" aria-hidden="true"></a><span class="co">## Get the continuous</span></span>
+<span id="cb32-2"><a href="from-observations-to-traitspaces.html#cb32-2" aria-hidden="true"></a>continuous_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;../examples/continuous_characters/Brennan2024.csv&quot;</span>,</span>
+<span id="cb32-3"><a href="from-observations-to-traitspaces.html#cb32-3" aria-hidden="true"></a>                            <span class="dt">row.names =</span> <span class="dv">1</span>)</span>
+<span id="cb32-4"><a href="from-observations-to-traitspaces.html#cb32-4" aria-hidden="true"></a><span class="co">## Get the tree</span></span>
+<span id="cb32-5"><a href="from-observations-to-traitspaces.html#cb32-5" aria-hidden="true"></a>continuous_tree &lt;-<span class="st"> </span><span class="kw">read.tree</span>(<span class="st">&quot;../examples/trees/Brennan2024.tre&quot;</span>)</span>
+<span id="cb32-6"><a href="from-observations-to-traitspaces.html#cb32-6" aria-hidden="true"></a></span>
+<span id="cb32-7"><a href="from-observations-to-traitspaces.html#cb32-7" aria-hidden="true"></a><span class="co">## Adding node labels</span></span>
+<span id="cb32-8"><a href="from-observations-to-traitspaces.html#cb32-8" aria-hidden="true"></a>continuous_tree &lt;-<span class="st"> </span><span class="kw">makeNodeLabel</span>(continuous_tree)</span>
+<span id="cb32-9"><a href="from-observations-to-traitspaces.html#cb32-9" aria-hidden="true"></a></span>
+<span id="cb32-10"><a href="from-observations-to-traitspaces.html#cb32-10" aria-hidden="true"></a><span class="co">## Cleaning both the tree and the data to match</span></span>
+<span id="cb32-11"><a href="from-observations-to-traitspaces.html#cb32-11" aria-hidden="true"></a>cleaned_data    &lt;-<span class="st"> </span><span class="kw">clean.data</span>(<span class="dt">data =</span> continuous_data, <span class="dt">tree =</span> continuous_tree)</span>
+<span id="cb32-12"><a href="from-observations-to-traitspaces.html#cb32-12" aria-hidden="true"></a>continuous_data &lt;-<span class="st"> </span>cleaned_data<span class="op">$</span>data</span>
+<span id="cb32-13"><a href="from-observations-to-traitspaces.html#cb32-13" aria-hidden="true"></a>continuous_tree  &lt;-<span class="st"> </span>cleaned_data<span class="op">$</span>tree</span>
+<span id="cb32-14"><a href="from-observations-to-traitspaces.html#cb32-14" aria-hidden="true"></a><span class="co">## The following were dropped:</span></span>
+<span id="cb32-15"><a href="from-observations-to-traitspaces.html#cb32-15" aria-hidden="true"></a>cleaned_data<span class="op">$</span>dropped_rows</span></code></pre></div>
+<pre><code>## [1] NA</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="from-observations-to-traitspaces.html#cb34-1" aria-hidden="true"></a>cleaned_data<span class="op">$</span>dropped_tips</span></code></pre></div>
+<pre><code>## [1] &quot;Egernia_s.badia&quot;</code></pre>
+<p>This second chunk is a discrete dataset from <span class="citation">Beck and Lee (<a href="#ref-beck2014ancient" role="doc-biblioref">2014</a>)</span> of 106 mammal species (mainly fossils) and 421 characters and the associated tree.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="from-observations-to-traitspaces.html#cb36-1" aria-hidden="true"></a><span class="co">## Get discrete data</span></span>
+<span id="cb36-2"><a href="from-observations-to-traitspaces.html#cb36-2" aria-hidden="true"></a>discrete_traits &lt;-<span class="st"> </span><span class="kw">read.nexus.data</span>(<span class="st">&quot;../examples/discrete_characters/Beck2014.nex&quot;</span>)</span>
+<span id="cb36-3"><a href="from-observations-to-traitspaces.html#cb36-3" aria-hidden="true"></a><span class="co">## Combine the output list into a matrix (rows are species and columns are characters)</span></span>
+<span id="cb36-4"><a href="from-observations-to-traitspaces.html#cb36-4" aria-hidden="true"></a>discrete_data &lt;-<span class="st"> </span><span class="kw">do.call</span>(rbind, discrete_traits)</span>
+<span id="cb36-5"><a href="from-observations-to-traitspaces.html#cb36-5" aria-hidden="true"></a><span class="co">## Get the tree</span></span>
+<span id="cb36-6"><a href="from-observations-to-traitspaces.html#cb36-6" aria-hidden="true"></a>discrete_tree &lt;-<span class="st"> </span><span class="kw">read.nexus</span>(<span class="st">&quot;../examples/trees/Beck2014.tre&quot;</span>)</span>
+<span id="cb36-7"><a href="from-observations-to-traitspaces.html#cb36-7" aria-hidden="true"></a></span>
+<span id="cb36-8"><a href="from-observations-to-traitspaces.html#cb36-8" aria-hidden="true"></a><span class="co">## Cleaning both the tree and the data to match</span></span>
+<span id="cb36-9"><a href="from-observations-to-traitspaces.html#cb36-9" aria-hidden="true"></a>cleaned_data  &lt;-<span class="st"> </span><span class="kw">clean.data</span>(<span class="dt">data =</span> discrete_data, <span class="dt">tree =</span> discrete_tree)</span>
+<span id="cb36-10"><a href="from-observations-to-traitspaces.html#cb36-10" aria-hidden="true"></a>discrete_data &lt;-<span class="st"> </span>cleaned_data<span class="op">$</span>data</span>
+<span id="cb36-11"><a href="from-observations-to-traitspaces.html#cb36-11" aria-hidden="true"></a>discrete_tree &lt;-<span class="st"> </span>cleaned_data<span class="op">$</span>tree</span>
+<span id="cb36-12"><a href="from-observations-to-traitspaces.html#cb36-12" aria-hidden="true"></a><span class="co">## The following were dropped:</span></span>
+<span id="cb36-13"><a href="from-observations-to-traitspaces.html#cb36-13" aria-hidden="true"></a>cleaned_data<span class="op">$</span>dropped_rows</span></code></pre></div>
+<pre><code>## [1] &quot;Montanalestes&quot;    &quot;Lainodon&quot;         &quot;Kharmerungulatum&quot; &quot;Alymlestes&quot;</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="from-observations-to-traitspaces.html#cb38-1" aria-hidden="true"></a>cleaned_data<span class="op">$</span>dropped_tips</span></code></pre></div>
+<pre><code>## [1] NA</code></pre>
+</div>
+</div>
+<div id="estimating-ancestral-traits-1" class="section level3 hasAnchor" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span> Estimating ancestral traits<a href="from-observations-to-traitspaces.html#estimating-ancestral-traits-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>There are many ways to estimate ancestral trait data in which I will not go into to much details.
+I will not go into the details on <em>how</em> ancestral traits are calculated because 1) that would be a whole course on likelihood estimation and model fitting and 2) all that would just be to calculate “glorified” averages.
+So for this reason I’m just going to focus on on way to do it but note that there are many ways to do it and many options to consider.
+My favourites are:</p>
+<ul>
+<li><code>ape::ace</code> for estimating ancestral traits for both continuous and discrete traits.</li>
+<li><code>dispRity::multi.ace</code> an updated version of <code>ape::ace</code> dealing with continuous characters and discrete ones (but with more options) and that can handle tree distributions (we will look at this one here).</li>
+<li><code>Claddis::estimate_ancestral_states</code> which is more specialized in estimating ancestral states for discrete characters. It noticeably has cool models for dealing with inapplicable data!</li>
+</ul>
+<blockquote>
+<p>Note that I have strong personal views on estimating ancestral traits: it is a useful tool for running some analyses (as we will see in next chapters) but it remains a very an impossible task, no matter how good the model and the data: unless we observe ancestral data (e.g. in the fossil record) we can only have a more or less vague idea of what the ancestral trait value could have been. If you use such methods for your research, I highly suggest you don’t use point estimates (i.e. single values) but rather distributions: both for the estimate and for the tree topology used for the estimation.</p>
+</blockquote>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="from-observations-to-traitspaces.html#cb40-1" aria-hidden="true"></a><span class="co">## Selecting a specific trait:</span></span>
+<span id="cb40-2"><a href="from-observations-to-traitspaces.html#cb40-2" aria-hidden="true"></a>snout_vent &lt;-<span class="st"> </span>continuous_data[,<span class="dv">1</span>]</span>
+<span id="cb40-3"><a href="from-observations-to-traitspaces.html#cb40-3" aria-hidden="true"></a><span class="kw">names</span>(snout_vent) &lt;-<span class="st"> </span><span class="kw">rownames</span>(continuous_data)</span>
+<span id="cb40-4"><a href="from-observations-to-traitspaces.html#cb40-4" aria-hidden="true"></a></span>
+<span id="cb40-5"><a href="from-observations-to-traitspaces.html#cb40-5" aria-hidden="true"></a><span class="co">## Estimating the ancestral states for this trait</span></span>
+<span id="cb40-6"><a href="from-observations-to-traitspaces.html#cb40-6" aria-hidden="true"></a>ancestral_snout_vent &lt;-<span class="st"> </span><span class="kw">ace</span>(snout_vent, continuous_tree)</span></code></pre></div>
+<pre><code>## Warning in sqrt(1/out$hessian): NaNs produced</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="from-observations-to-traitspaces.html#cb42-1" aria-hidden="true"></a><span class="co">## Combining the tips and the ancestral values</span></span>
+<span id="cb42-2"><a href="from-observations-to-traitspaces.html#cb42-2" aria-hidden="true"></a>ancestral_values &lt;-<span class="st"> </span>ancestral_snout_vent<span class="op">$</span>ace</span>
+<span id="cb42-3"><a href="from-observations-to-traitspaces.html#cb42-3" aria-hidden="true"></a>snout_vent_data &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">data.frame</span>(<span class="st">&quot;snout vent&quot;</span> =<span class="st"> </span><span class="kw">c</span>(snout_vent, ancestral_values)))</span>
+<span id="cb42-4"><a href="from-observations-to-traitspaces.html#cb42-4" aria-hidden="true"></a></span>
+<span id="cb42-5"><a href="from-observations-to-traitspaces.html#cb42-5" aria-hidden="true"></a><span class="co">## Plotting the data (using the treats package)</span></span>
+<span id="cb42-6"><a href="from-observations-to-traitspaces.html#cb42-6" aria-hidden="true"></a>treats_data &lt;-<span class="st"> </span><span class="kw">make.treats</span>(continuous_tree, <span class="dt">data =</span> snout_vent_data)</span>
+<span id="cb42-7"><a href="from-observations-to-traitspaces.html#cb42-7" aria-hidden="true"></a><span class="kw">plot</span>(treats_data)</span></code></pre></div>
+<p><img src="trait_data_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p>This look all good and realistic (i.e. the ancestor of this group has a trait value that is a scaled average of the observed species).
+However, if we have a look at the errors around the estimations, we have a whole different story!</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="from-observations-to-traitspaces.html#cb43-1" aria-hidden="true"></a><span class="co">## Plotting the trait data</span></span>
+<span id="cb43-2"><a href="from-observations-to-traitspaces.html#cb43-2" aria-hidden="true"></a><span class="kw">plot</span>(treats_data, <span class="dt">ylim =</span> <span class="kw">range</span>(ancestral_snout_vent<span class="op">$</span>CI95))</span>
+<span id="cb43-3"><a href="from-observations-to-traitspaces.html#cb43-3" aria-hidden="true"></a><span class="kw">abline</span>(<span class="dt">h =</span> <span class="dv">0</span>, <span class="dt">lty =</span> <span class="dv">2</span>, <span class="dt">lwd =</span> <span class="fl">0.2</span>)</span>
+<span id="cb43-4"><a href="from-observations-to-traitspaces.html#cb43-4" aria-hidden="true"></a><span class="co">## Get the node ages</span></span>
+<span id="cb43-5"><a href="from-observations-to-traitspaces.html#cb43-5" aria-hidden="true"></a>node_ages &lt;-<span class="st"> </span><span class="kw">tree.age</span>(continuous_tree)<span class="op">$</span>age[<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">Ntip</span>(continuous_tree))]</span>
+<span id="cb43-6"><a href="from-observations-to-traitspaces.html#cb43-6" aria-hidden="true"></a><span class="co">## Get the 95% confidence interval for each node estiamte</span></span>
+<span id="cb43-7"><a href="from-observations-to-traitspaces.html#cb43-7" aria-hidden="true"></a>confidence_intervals &lt;-<span class="st"> </span>ancestral_snout_vent<span class="op">$</span>CI95</span>
+<span id="cb43-8"><a href="from-observations-to-traitspaces.html#cb43-8" aria-hidden="true"></a><span class="co">## Plotting each confidence interval</span></span>
+<span id="cb43-9"><a href="from-observations-to-traitspaces.html#cb43-9" aria-hidden="true"></a><span class="cf">for</span>(one_node <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">Nnode</span>(continuous_tree)) {</span>
+<span id="cb43-10"><a href="from-observations-to-traitspaces.html#cb43-10" aria-hidden="true"></a>  <span class="kw">lines</span>(<span class="dt">x =</span> <span class="kw">rep</span>(node_ages[one_node], <span class="dv">2</span>), <span class="dt">y =</span> confidence_intervals[one_node,], <span class="dt">col =</span> <span class="st">&quot;orange&quot;</span>, <span class="dt">lwd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb43-11"><a href="from-observations-to-traitspaces.html#cb43-11" aria-hidden="true"></a>}</span></code></pre></div>
+<p><img src="trait_data_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p>So that’s not that great!</p>
+<div id="how-to-improve-this-mess" class="section level4 hasAnchor" number="2.3.2.1">
+<h4><span class="header-section-number">2.3.2.1</span> How to improve this mess?<a href="from-observations-to-traitspaces.html#how-to-improve-this-mess" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>Be cautious about ancestral state estimations: they are just that (estimations! - not <em>reconstructions</em>).</li>
+<li>Whenever possible, use multiple trees to account for topological error.</li>
+<li>Whenever possible, use the distribution of estimates rather than point estimates.</li>
+<li>Whenever possible, use multiple traits rather than a single one.</li>
+</ul>
+<p>But for now we can just go ahead and keep these caveats in mind.
+You can use the <code>dispRity::multi.ace</code> function to estimate ancestral trait values for large datasets and use tree distributions:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="from-observations-to-traitspaces.html#cb44-1" aria-hidden="true"></a><span class="co">## Running the ancestral states for all the traits (it should take a couple of seconds)</span></span>
+<span id="cb44-2"><a href="from-observations-to-traitspaces.html#cb44-2" aria-hidden="true"></a>ancestral_states &lt;-<span class="st"> </span><span class="kw">multi.ace</span>(continuous_data, continuous_tree)</span></code></pre></div>
+<pre><code>## Warning in sqrt(1/out$hessian): NaNs produced
+## Warning in sqrt(1/out$hessian): NaNs produced
+## Warning in sqrt(1/out$hessian): NaNs produced
+## Warning in sqrt(1/out$hessian): NaNs produced
+## Warning in sqrt(1/out$hessian): NaNs produced
+## Warning in sqrt(1/out$hessian): NaNs produced
+## Warning in sqrt(1/out$hessian): NaNs produced
+## Warning in sqrt(1/out$hessian): NaNs produced
+## Warning in sqrt(1/out$hessian): NaNs produced</code></pre>
+<p>With the same caveats in mind, we can do the same for discrete traits using still <code>multi.ace</code>.
+Note that some of the syntax here is the same as we’ve seen for <code>char.diff</code>: there is a lot of room for personalisation to tailor the token interpretations and behaviour, the models, etc…
+Here we will use the option <code>output = "combined"</code> to get a combined matrix (tips + nodes) for ease of use.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="from-observations-to-traitspaces.html#cb46-1" aria-hidden="true"></a><span class="co">## Estimating ancestral traits for discrete characters characters</span></span>
+<span id="cb46-2"><a href="from-observations-to-traitspaces.html#cb46-2" aria-hidden="true"></a>ancestral_states &lt;-<span class="st"> </span><span class="kw">multi.ace</span>(discrete_data, discrete_tree, <span class="dt">output =</span> <span class="st">&quot;combined&quot;</span>)</span></code></pre></div>
+<p>We can then use this new matrix with ancestral states to re-calculate distances (the same as before but including the nodes).</p>
+<div class="warning" style="padding:0.1em; background-color:#65D85F; color:#067800">
+<p><strong>TINKER TIMES</strong>: see if you remember how to do it by just copy/pasting chunks from above.</p>
+<details>
+<p><summary>[<strong>Click to expand the solution</strong>]:
+</summary></p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="from-observations-to-traitspaces.html#cb47-1" aria-hidden="true"></a><span class="co">## Calculating the distance matrix</span></span>
+<span id="cb47-2"><a href="from-observations-to-traitspaces.html#cb47-2" aria-hidden="true"></a>distance_matrix &lt;-<span class="st"> </span><span class="kw">char.diff</span>(ancestral_states, <span class="dt">method =</span> <span class="st">&quot;mord&quot;</span>, <span class="dt">by.col =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb47-3"><a href="from-observations-to-traitspaces.html#cb47-3" aria-hidden="true"></a></span>
+<span id="cb47-4"><a href="from-observations-to-traitspaces.html#cb47-4" aria-hidden="true"></a><span class="co">## Ordinating the data</span></span>
+<span id="cb47-5"><a href="from-observations-to-traitspaces.html#cb47-5" aria-hidden="true"></a>my_pco &lt;-<span class="st"> </span><span class="kw">cmdscale</span>(distance_matrix,</span>
+<span id="cb47-6"><a href="from-observations-to-traitspaces.html#cb47-6" aria-hidden="true"></a>                   <span class="co"># the number of dimensions</span></span>
+<span id="cb47-7"><a href="from-observations-to-traitspaces.html#cb47-7" aria-hidden="true"></a>                   <span class="dt">k =</span> <span class="kw">ncol</span>(distance_matrix)<span class="op">-</span><span class="dv">2</span>,</span>
+<span id="cb47-8"><a href="from-observations-to-traitspaces.html#cb47-8" aria-hidden="true"></a>                   <span class="co"># the Cailliez correction</span></span>
+<span id="cb47-9"><a href="from-observations-to-traitspaces.html#cb47-9" aria-hidden="true"></a>                   <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb47-10"><a href="from-observations-to-traitspaces.html#cb47-10" aria-hidden="true"></a></span>
+<span id="cb47-11"><a href="from-observations-to-traitspaces.html#cb47-11" aria-hidden="true"></a><span class="co">## Getting just the coordinates</span></span>
+<span id="cb47-12"><a href="from-observations-to-traitspaces.html#cb47-12" aria-hidden="true"></a>my_traitspace &lt;-<span class="st"> </span>my_pco<span class="op">$</span>points</span>
+<span id="cb47-13"><a href="from-observations-to-traitspaces.html#cb47-13" aria-hidden="true"></a>my_loadings &lt;-<span class="st"> </span><span class="kw">apply</span>(my_traitspace, <span class="dv">2</span>, var)<span class="op">/</span><span class="kw">sum</span>(<span class="kw">apply</span>(my_traitspace, <span class="dv">2</span>, var))</span>
+<span id="cb47-14"><a href="from-observations-to-traitspaces.html#cb47-14" aria-hidden="true"></a></span>
+<span id="cb47-15"><a href="from-observations-to-traitspaces.html#cb47-15" aria-hidden="true"></a>op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb47-16"><a href="from-observations-to-traitspaces.html#cb47-16" aria-hidden="true"></a><span class="co">## Plotting the original data</span></span>
+<span id="cb47-17"><a href="from-observations-to-traitspaces.html#cb47-17" aria-hidden="true"></a><span class="kw">plot</span>(my_traitspace[, <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)],</span>
+<span id="cb47-18"><a href="from-observations-to-traitspaces.html#cb47-18" aria-hidden="true"></a>     <span class="dt">xlab =</span> <span class="st">&quot;dimension 1&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;dimension 2&quot;</span>, <span class="dt">pch =</span> <span class="dv">19</span>)</span>
+<span id="cb47-19"><a href="from-observations-to-traitspaces.html#cb47-19" aria-hidden="true"></a><span class="co">## Adding another plot with the loadings</span></span>
+<span id="cb47-20"><a href="from-observations-to-traitspaces.html#cb47-20" aria-hidden="true"></a><span class="kw">barplot</span>(my_loadings, <span class="dt">ylab =</span> <span class="st">&quot;% variance&quot;</span>)</span></code></pre></div>
+<p><img src="trait_data_files/figure-html/unnamed-chunk-29-1.png" width="1152" /></p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="from-observations-to-traitspaces.html#cb48-1" aria-hidden="true"></a><span class="kw">par</span>(op)</span></code></pre></div>
+</details>
+</div>
+</div>
+</div>
+</div>
+<div id="references-1" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> References<a href="from-observations-to-traitspaces.html#references-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references hanging-indent">
+<div id="ref-beck2014ancient">
+<p>Beck, Robin MD, and Michael SY Lee. 2014. “Ancient Dates or Accelerated Rates? Morphological Clocks and the Antiquity of Placental Mammals.” <em>Proceedings of the Royal Society B: Biological Sciences</em> 281 (1793): 20141278.</p>
+</div>
+<div id="ref-brazeau2011problematic">
+<p>Brazeau, Martin D. 2011. “Problematic Character Coding Methods in Morphology and Their Effects.” <em>Biological Journal of the Linnean Society</em> 104 (3): 489–98.</p>
+</div>
+<div id="ref-brennan2024evolutionary">
+<p>Brennan, Ian G, David G Chapple, J Scott Keogh, and Stephen Donnellan. 2024. “Evolutionary Bursts Drive Morphological Novelty in the World’s Largest Skinks.” <em>bioRxiv</em>, 2024–06.</p>
+</div>
+<div id="ref-cailliez1983analytical">
+<p>Cailliez, Francis. 1983. “The Analytical Solution of the Additive Constant Problem.” <em>Psychometrika</em> 48 (2): 305–8.</p>
+</div>
+<div id="ref-guillerme2020disparities">
+<p>Guillerme, Thomas, Natalie Cooper, Stephen L Brusatte, Katie E Davis, Andrew L Jackson, Sylvain Gerber, Anjali Goswami, et al. 2020. “Disparities in the Analysis of Morphological Disparity.” <em>Biology Letters</em> 16 (7): 20200199.</p>
+</div>
+<div id="ref-legendre2012numerical">
+<p>Legendre, Pierre, and Louis Legendre. 2012. <em>Numerical Ecology</em>. Vol. 24. Elsevier.</p>
+</div>
+<div id="ref-lloyd2016estimating">
+<p>Lloyd, Graeme T. 2016. “Estimating Morphological Diversity and Tempo with Discrete Character-Taxon Matrices: Implementation, Challenges, Progress, and Future Directions.” <em>Biological Journal of the Linnean Society</em> 118 (1): 131–51.</p>
+</div>
+<div id="ref-parins2018use">
+<p>Parins-Fukuchi, Caroline. 2018. “Use of Continuous Traits Can Improve Morphological Phylogenetics.” <em>Systematic Biology</em> 67 (2): 328–39.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="from-traitspaces-to-disparity.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

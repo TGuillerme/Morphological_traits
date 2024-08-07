@@ -161,8 +161,7 @@ Principal coordinates analysis (PCO, PCoA), Multidimensional scaling (MDS), Non-
 
 ### Principal components analyses (PCA)
 
-[SLIDES: PCA](../)
-<!-- gitraw link slides/01.1_PCA.pdf-->
+[SLIDES: PCA](https://raw.githack.com/TGuillerme/Morphological_traits/main/slides/01.1_PCA.pdf)
 
 <div class="warning" style='padding:0.1em; background-color:#FFAF70; color:#954200'>
 
@@ -230,8 +229,7 @@ PCOs are also pretty easy but unlike PCAs they require one extra step before ord
 
 #### Distance matrices
 
-[SLIDES: PC0](../)
-<!-- gitraw link slides/01.2_PC0.pdf-->
+[SLIDES: PC0](https://raw.githack.com/TGuillerme/Morphological_traits/main/slides/01.2_PC0.pdf)
 
 There are many ways to calculate distance matrices from discrete morphological characters.
 See this very good review for more information: @lloyd2016estimating.
