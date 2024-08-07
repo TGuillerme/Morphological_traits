@@ -229,7 +229,7 @@ PCOs are also pretty easy but unlike PCAs they require one extra step before ord
 
 #### Distance matrices
 
-[SLIDES: PC0](https://raw.githack.com/TGuillerme/Morphological_traits/main/slides/01.2_PC0.pdf)
+[SLIDES: PCO](https://raw.githack.com/TGuillerme/Morphological_traits/main/slides/01.2_PCO.pdf)
 
 There are many ways to calculate distance matrices from discrete morphological characters.
 See this very good review for more information: @lloyd2016estimating.
