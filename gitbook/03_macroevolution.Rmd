@@ -548,34 +548,129 @@ We will be covering that in much more details tomorrow!
 
 We've looked at many methods but now it's time to work on telling a story!
 
-<!-- Mammals around the K-Pg extinction (106 - 421):
-@beck2014ancient
-https://royalsocietypublishing.org/doi/full/10.1098/rspb.2014.1278
+Here are some examples:
 
-Echinoderms during the Ordovician and Devonian (42 taxa - 87 char) 
-@wright2017bayesian
-https://www.cambridge.org/core/journals/journal-of-paleontology/article/bayesian-estimation-of-fossil-phylogenies-and-the-evolution-of-early-to-middle-paleozoic-crinoids-echinodermata/E37972902541CD0995AAD08A1122BD54
+* [Morphological evolutionary bursts in skinks](https://www.biorxiv.org/content/10.1101/2024.06.27.600807v1.abstract) by @brennan2024evolutionary
 
-Dinosaurs
-@bapst2016topology
-https://royalsocietypublishing.org/doi/full/10.1098/rsbl.2016.0237
-TAX=89 NCHAR=374
+<details>
+  <summary>[**Click here to read in the data**]:
+</summary>
 
-Dinosaurs - bird transition
-@brusatte2014gradual
-https://www.sciencedirect.com/science/article/pii/S0960982214010471
-NTAX=152 NCHAR=853 -->
+```{r}
+## Loading the data from Brennan 2024 (you will need to do the PCA yourself!)
+data <- read.csv("../examples/continuous_characters/Brennan2024.csv") 
 
-Here are some great examples:
+## And here's the tree
+tree <- read.tree("../examples/trees/Brennan2024.tre") 
+```
+</details>
+
+
+
+ * [Mammals around the K-Pg extinction](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2014.1278) by @beck2014ancient
+
+<details>
+  <summary>[**Click here to read in the data**]:
+</summary>
+
+```{r}
+## Loading the data from Beck and Lee 2014 (you will need to do the PCO yourself!)
+data <- read.nexus.data("../examples/discrete_characters/Beck2014.nex") 
+
+## And here's the tree
+tree <- read.nexus("../examples/trees/Beck2014.tre")
+
+## And the tip ages
+FADLAD <- read.csv("../examples/FADLAD/Beck2014.csv", row.names = 1) 
+```
+</details>
+
+
+
+ * [Echinoderms during the Ordovician and Devonian](https://www.cambridge.org/core/journals/journal-of-paleontology/article/bayesian-estimation-of-fossil-phylogenies-and-the-evolution-of-early-to-middle-paleozoic-crinoids-echinodermata/E37972902541CD0995AAD08A1122BD54) by @wright2017bayesian
+
+<details>
+  <summary>[**Click here to read in the data**]:
+</summary>
+
+```{r}
+## Loading the data from Wright 2017 (you will need to do the PCO yourself!)
+data <- read.nexus.data("../examples/discrete_characters/Wright2017.nex") 
+
+## And here's the tree
+tree <- read.nexus("../examples/trees/Wright2017.tre")
+
+## And the tip ages
+FADLAD <- read.csv("../examples/FADLAD/Wright2017.csv", row.names = 1) 
+```
+</details>
+
+
+
+ * [Dinosaurs - bird transition](https://www.sciencedirect.com/science/article/pii/S0960982214010471) by @brusatte2014gradual
+
+<details>
+  <summary>[**Click here to read in the data**]:
+</summary>
+
+```{r}
+## Loading the data from Beck and Lee 2014 (you will need to do the PCO yourself!)
+data <- read.nexus.data("../examples/discrete_characters/Brusatte2014.nex") 
+
+## And here's the tree
+tree <- read.nexus("../examples/trees/Brusatte2014.nex")
+
+## And the tip ages
+FADLAD <- read.csv("../examples/FADLAD/Brusatte2014.csv", row.names = 1) 
+```
+</details>
+
+
 
  * [disparity through time in crocodiles](https://onlinelibrary.wiley.com/doi/full/10.1111/jeb.13540) by @godoy2020crocodylomorph
-<!-- INC DATA! -->
+
+<details>
+  <summary>[**Click here to read in the data**]:
+</summary>
+
+```{r}
+load("../examples/gmm_characters/Godoy2019.RData") 
+## landmark data
+# landmark_data
+# semi_landmarks
+
+## Tree
+tree <- alter1_MCCT
+GPA <- geomorph::gpagen(landmark_data, curves = semi_landmarks, surfaces = NULL, PrinAxes = TRUE, max.iter = NULL, ProcD = F, Proj = TRUE, print.progress = TRUE)
+traitspace <- dispRity::geomorph.ordination(GPA)
+```
+</details>
+
+
+
  * [relation between changes in disparity and temperature in turtles](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.10201) by @farina2023turtle
-<!-- INC DATA! -->
+
+<details>
+  <summary>[**Click here to read in the data**]:
+</summary>
+
+```{r}
+## Loading the data from Farina 2023
+load("../examples/continuous_characters/Farina2023.RData") 
+
+## This is the age of each tip
+FADLAD <- fbd_ages
+## This is a list of trees (note that you can do dispRity analyses with multiple trees!)
+tree_list <- Sterli_10trees
+## Data and factors (unidimensional)
+traitspace_table <- data_turtles
+```
+</details>
+
+Other cool examples:
+
  * [morphospace changes in brachiopods](https://www.nature.com/articles/s41559-024-02491-9) by @guo2024morphological
-<!-- INC DATA -->
  * [diversification of sabertooth tigers](https://www.cell.com/current-biology/fulltext/S0960-9822(24)00529-3#%20) by @chatar2024evolutionary
-<!-- INC DATA -->
  * [Mezosoic archosaurs disparity](https://royalsocietypublishing.org/doi/full/10.1098/rsos.231495) by @shipley2024locomotion
  * [convergence between mosasaurs and early cetacean skulls](https://www.cambridge.org/core/journals/paleobiology/article/convergence-and-constraint-in-the-cranial-evolution-of-mosasaurid-reptiles-and-early-cetaceans/19DC42DECB1C9166732122F1857EAC5F) by @bennion2023convergence
  * [niche partitioning in marine reptiles](https://royalsocietypublishing.org/doi/full/10.1098/rsos.231951) by @foffa2024comparative

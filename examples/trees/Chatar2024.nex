@@ -1,0 +1,187 @@
+#NEXUS
+[R-package APE, Thu Mar  7 15:25:32 2024]
+
+BEGIN TAXA;
+	DIMENSIONS NTAX = 87;
+	TAXLABELS
+		Acinonyx_jubatus
+		Acinonyx_pardinensis
+		Miracinonyx_trumani
+		Miracinonyx_inexpectatus
+		Miracinonyx_studeri
+		Puma_concolor
+		Puma_pardoides
+		Puma_yaguarondi
+		Lynx_lynx
+		Lynx_rufus
+		Felis_bieti
+		Felis_lybica
+		Felis_sylvestris
+		Felis_margarita
+		Felis_nigripes
+		Felis_chaus
+		Otocolobus_manul
+		Catopuma_temminckii
+		Prionailurus_bengalensis
+		Prionailurus_viverrinus
+		Prionailurus_rubiginosus
+		Leptailurus_serval
+		Caracal_aurata
+		Caracal_caracal
+		Leopardus_colocolo
+		Leopardus_geoffroyi
+		Leopardus_tigrinus
+		Leopardus_pardalis
+		Leopardus_wideii
+		Leopardus_pajeros
+		Neofelis_nebulosa
+		Panthera_uncia
+		Panthera_palaeosinensis
+		Panthera_leo
+		Panthera_spelaea
+		Panthera_atrox
+		Panthera_onca
+		Panthera_pardus
+		Panthera_tigris
+		Proailurus_lemanensis
+		Pseudaelurus_stouti
+		Pseudaelurus_intrepidus
+		Pseudaelurus_marshi
+		Pseudaelurus_validus
+		Pseudaelurus_pedionomus
+		Pseudaelurus_skineri
+		Homotherium_crenatidens
+		Homotherium_latidens
+		Homotherium_serum
+		Homotherium_johnstoni
+		Xenosmilus_hodsonae
+		Amphimachairodus_palanderi
+		Amphimachairodus_coloradensis
+		Machairodus_aphanistus
+		Machairodus_catacopis
+		Nimravides_pediomonus
+		Nimravides_thinobastes
+		Megantereon_cultridens
+		Megantereon_falconeri
+		Smilodon_fatalis
+		Smilodon_gracilis
+		Smilodon_populator
+		Dinofelis_cristata
+		Dinofelis_barlowi
+		Promegantereon_ogygia
+		Metailurus_major
+		Yoshi_garevskii
+		Yoshi_minor
+		Albanosmilus_whitfordi
+		Barbourofelis_fricki
+		Barbourofelis_loveorum
+		Barbourofelis_morrisi
+		Barbourofelis_piveteaui
+		Oriensmilus_liupanensis
+		Prosansanosmilus_perigrinus
+		Nimravus_brachyops
+		Quercylurus_major
+		Eofelis_edwardsii
+		Dinictis_felina
+		Pogonodon_davisi
+		Pogonodon_platycopis
+		Eusmilus_bidentatus
+		Eusmilus_sicarius
+		Eusmilus_dakotensis
+		Nanosmilus_kurteni
+		Hoplophoneus_occidentalis
+		Hoplophoneus_primaevus
+	;
+END;
+BEGIN TREES;
+	TRANSLATE
+		1	Acinonyx_jubatus,
+		2	Acinonyx_pardinensis,
+		3	Miracinonyx_trumani,
+		4	Miracinonyx_inexpectatus,
+		5	Miracinonyx_studeri,
+		6	Puma_concolor,
+		7	Puma_pardoides,
+		8	Puma_yaguarondi,
+		9	Lynx_lynx,
+		10	Lynx_rufus,
+		11	Felis_bieti,
+		12	Felis_lybica,
+		13	Felis_sylvestris,
+		14	Felis_margarita,
+		15	Felis_nigripes,
+		16	Felis_chaus,
+		17	Otocolobus_manul,
+		18	Catopuma_temminckii,
+		19	Prionailurus_bengalensis,
+		20	Prionailurus_viverrinus,
+		21	Prionailurus_rubiginosus,
+		22	Leptailurus_serval,
+		23	Caracal_aurata,
+		24	Caracal_caracal,
+		25	Leopardus_colocolo,
+		26	Leopardus_geoffroyi,
+		27	Leopardus_tigrinus,
+		28	Leopardus_pardalis,
+		29	Leopardus_wideii,
+		30	Leopardus_pajeros,
+		31	Neofelis_nebulosa,
+		32	Panthera_uncia,
+		33	Panthera_palaeosinensis,
+		34	Panthera_leo,
+		35	Panthera_spelaea,
+		36	Panthera_atrox,
+		37	Panthera_onca,
+		38	Panthera_pardus,
+		39	Panthera_tigris,
+		40	Proailurus_lemanensis,
+		41	Pseudaelurus_stouti,
+		42	Pseudaelurus_intrepidus,
+		43	Pseudaelurus_marshi,
+		44	Pseudaelurus_validus,
+		45	Pseudaelurus_pedionomus,
+		46	Pseudaelurus_skineri,
+		47	Homotherium_crenatidens,
+		48	Homotherium_latidens,
+		49	Homotherium_serum,
+		50	Homotherium_johnstoni,
+		51	Xenosmilus_hodsonae,
+		52	Amphimachairodus_palanderi,
+		53	Amphimachairodus_coloradensis,
+		54	Machairodus_aphanistus,
+		55	Machairodus_catacopis,
+		56	Nimravides_pediomonus,
+		57	Nimravides_thinobastes,
+		58	Megantereon_cultridens,
+		59	Megantereon_falconeri,
+		60	Smilodon_fatalis,
+		61	Smilodon_gracilis,
+		62	Smilodon_populator,
+		63	Dinofelis_cristata,
+		64	Dinofelis_barlowi,
+		65	Promegantereon_ogygia,
+		66	Metailurus_major,
+		67	Yoshi_garevskii,
+		68	Yoshi_minor,
+		69	Albanosmilus_whitfordi,
+		70	Barbourofelis_fricki,
+		71	Barbourofelis_loveorum,
+		72	Barbourofelis_morrisi,
+		73	Barbourofelis_piveteaui,
+		74	Oriensmilus_liupanensis,
+		75	Prosansanosmilus_perigrinus,
+		76	Nimravus_brachyops,
+		77	Quercylurus_major,
+		78	Eofelis_edwardsii,
+		79	Dinictis_felina,
+		80	Pogonodon_davisi,
+		81	Pogonodon_platycopis,
+		82	Eusmilus_bidentatus,
+		83	Eusmilus_sicarius,
+		84	Eusmilus_dakotensis,
+		85	Nanosmilus_kurteni,
+		86	Hoplophoneus_occidentalis,
+		87	Hoplophoneus_primaevus
+	;
+	TREE * UNTITLED = [&R] (((((((((1:2,2:1.2):4.7,(((3:1.2,4:1.374):4.6,5:1.2):1.2,((6:4.4,7:1.2):1.2,8:5.9):1.3):1.2):1.2,(9:3.79,10:1.2):5.9):1.2,((((((11:2.41,(12:1.2,13:1.2):1.2):1.2,14:3.6):1.2,15:4.81):1.2,16:5.96):1.2,(17:1.2,18:1.295):5.91):1.2,((19:1.2,20:1.2):1.295,21:2.4):5.91):2.49):1.2,((22:1.2,23:1.2,24:1.2):1.2,((25:1.2,(26:1.2,27:1.2):1.27):1.906,((28:1.2,29:1.855):1.2,30:3.181):1.2):1.819):5.9):1.2,(((31:2.4,32:1.2):2.4,33:2.35):4.6,(((((34:1.2,35:2.8):1.2,36:4.46):1.2,37:5.05):1.2,38:4.8):1.2,39:7.45):1.2):3.8):18.7,((40:1.2,(41:3.13,(42:1.2,43:1.6):1.2):10.5):1.2,((44:1.2,45:8.03):1.2,46:2.4):7.97):1.2):1.2,(((((47:4.9,((48:2.212,49:1.2):2.5,(50:1.2,51:3.512):1.2):1.2):7.5,(52:6.3,53:1.2):1.2):1.2,((54:1.2,55:2.53):3.17,(56:1.2,57:1.2):1.2):1.2):1.2,(((58:1.2,59:3.953):1.967,((60:3.512,61:1.2):1.2,62:4.712):1.2):1.2,(63:1.2,64:2.933):3.167):8.7):1.2,((65:3.13,66:1.2):1.2,(67:4.13,68:1.2):1.2):5.57):13.6):9.1,(((((((69:3.6,((70:1.7,71:1.2):5.3,(72:1.2,73:3.901):1.2):1.2):1.2,74:2.4):3.24,75:1.2):10.96,76:1.2):3.7,(77:1.2,78:4.27):1.2):1.8,(79:1.2,(80:2.4,81:1.2):3.7):1.2):3,(((((82:1.2,83:1.7):1.2,84:2.4):1.2,85:3.6):1.2,86:5.3):1.2,87:4.2):1.2):1.2);
+END;
